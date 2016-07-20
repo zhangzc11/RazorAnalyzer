@@ -30,6 +30,7 @@ class RazorAnalyzer: public RazorEvents {
         virtual ~RazorAnalyzer();
 
         void EnableEventInfo();
+        void EnablePVAll();
         void EnableMuons();
         void EnableElectrons();
         void EnableTaus();
@@ -46,30 +47,10 @@ class RazorAnalyzer: public RazorEvents {
         void EnableAll();
 
         //------ LIST OF ANALYSES ------//
-        virtual void DummyAnalysis();
-        virtual void RazorInclusive(string outFileName = "RazorInclusive.root", bool combineTrees = false, bool isData = false);
-        virtual void HggRazor(string outFileName = "HggRazor.root", bool combineTrees = false, int option = 0, bool isData = false );
-        virtual void FullRazorInclusive(string outFileName = "FullRazorInclusive.root", bool isData = false);
-        virtual void MatchedRazorInclusive(string outFileName = "MatchedRazorInclusive.root", bool combineTrees = false);
-	virtual void RazorVetoLeptonStudy(string outputfilename = "RazorVetoLeptonStudy", bool combineTrees = false);
-	virtual void ElectronNtupler(string outputfilename = "", int Option = -1);
-	virtual void MuonNtupler(string outputfilename = "", int Option = -1);
-	virtual void TauNtupler(string outputfilename = "", int Option = -1);
-	virtual void JetNtupler(string outputfilename = "", int Option = -1);
-        virtual void PhotonNtupler(string outputfilename = "PhotonNtuple.root", int Option = -1); 
-        virtual void RazorMetAna(string outFileName = "RazorMET.root");
-	virtual void RazorDM(string outFileName = "RazorInclusive.root", bool combineTrees = false);
-	virtual void RazorControlRegions(string outFileName = "RazorControlRegions.root", int option = -1, bool isData = false);
-	virtual void VetoLeptonEfficiencyControlRegion(string outFileName = "TTBarTagAndProbeRegion.root", int option = 0);
-        virtual void RazorPhotonStudy(string outputfilename = "RazorPhotonStudy.root", bool isData = false, bool filterEvents = true, bool isRunOne = true);
-        virtual void MakeMCPileupDistribution(string outputfilename = "MCPileupDistribution.root", string label = "defaultSample");
-	virtual void RazorZAnalysis(string outFileName = "RazorZAnalysis.root", bool combineTrees = false);
-        virtual void HbbRazor(string outFileName = "HbbRazor.root", bool combineTrees = false, bool isData = false, bool isRunOne = false);
-        virtual void HZZRazor(string outFileName = "HZZRazor.root", bool isData = false);
-	virtual void RazorQCDStudy(string outFileName = "RazorQCDStudy.root", int option = -1, bool isData = false, bool isRunOne = false);
-	virtual void RazorTagAndProbe(string outFileName = "RazorTagAndProbe.root", int option = -1, bool isData = false);
+        virtual void Analyze(bool isData, int option, string outputFileName, string label);
 
         //functions in RazorAuxMuon.cc
+	float GetMuonEffectiveAreaMean(int i, string type );
 	bool isMuonPOGLooseMuon(int i, bool applyID = true, bool applyIso = true);
 	bool isMuonPOGMediumMuon(int i, bool applyID = true, bool applyIso = true);
         bool isMuonPOGTightMuon(int i, bool applyID = true, bool applyIso = true);
@@ -83,8 +64,8 @@ class RazorAnalyzer: public RazorEvents {
 
         //functions in RazorAuxElectron.cc
 	float GetElectronScaleCorrection( double pt, double eta );
-	float GetEffectiveAreaMean(int i);
-	float GetEffectiveArea90(int i);
+	float GetElectronEffectiveAreaMean(int i, bool use25nsCuts = true);
+	float GetElectronEffectiveArea90(int i);
         bool isEGammaPOGVetoElectron(int i, bool applyID = true, bool applyIso = true, bool use25nsCuts = true);
         bool isEGammaPOGLooseElectron(int i, bool applyID = true, bool applyIso = true, bool use25nsCuts = true);
         bool isEGammaPOGMediumElectron(int i, bool applyID = true, bool applyIso = true, bool use25nsCuts = true);
@@ -107,7 +88,9 @@ class RazorAnalyzer: public RazorEvents {
 	bool passHZZElectronIso(int i);
 	bool passHZZElectronPreselection(int i);
 	bool isHZZElectron(int i);
-	bool matchElectronHLTFilters( int i, string HLTFilter);
+	bool matchElectronHLTFilters( int i, string HLTFilter, string analysisTag);
+	bool matchElectronHLTFilters2015( int i, string HLTFilter);
+	bool matchElectronHLTFilters2016( int i, string HLTFilter);
 	bool matchProbeElectronHLTFilters( int i);
 	bool matchProbeSCHLTFilters( int i);
 	bool matchTagElectronHLTFilters( int i);
@@ -120,8 +103,8 @@ class RazorAnalyzer: public RazorEvents {
         //functions in RazorAuxPhoton.cc
         bool photonPassesElectronVeto(int i);
 	void getPhotonEffAreaRun2( float eta, double& effAreaChHad, double& effAreaNHad, double& effAreaPho );
-	void getPhotonEffArea95( float eta, double& effAreaChHad, double& effAreaNHad, double& effAreaPho );
-        bool photonPassesIsolation(int i, double PFChHadIsoCut, double PFNeuHadIsoCut, double PFPhotIsoCut, bool useEffectiveArea95);
+	void getPhotonEffArea90( float eta, double& effAreaChHad, double& effAreaNHad, double& effAreaPho );
+        bool photonPassesIsolation(int i, double PFChHadIsoCut, double PFNeuHadIsoCut, double PFPhotIsoCut, bool useEffectiveArea90);
 	bool photonPassLooseIDWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool photonPassMediumIDWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool photonPassTightIDWithoutEleVeto(int i, bool use25nsCuts = true);
@@ -138,6 +121,11 @@ class RazorAnalyzer: public RazorEvents {
         bool isMediumPhotonWithoutEleVeto(int i, bool use25nsCuts = true);
         bool isTightPhotonWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool matchPhotonHLTFilters( int i, string HLTFilter);
+	void getPhotonEffAreaExo15004( float eta, double& effAreaPho );
+	bool photonPassLooseIDWithoutEleVetoExo15004(int i);
+	bool photonPassesIsolationExo15004(int i, double PFChHadIsoCut, double PFPhotIsoCut );
+	bool photonPassLooseIsoExo15004(int i);
+	TLorentzVector GetCorrectedMomentum( TVector3 vtx, TVector3 phoPos, double phoE );
 
 	/* //function in HggRazorAuxPhoton.cc */
 	/* // R u n 1   C u t   B a s e d   I D */
@@ -155,19 +143,20 @@ class RazorAnalyzer: public RazorEvents {
 
 
         //functions in RazorAuxJet.cc     
-        bool isOldCSVL(int i);
-        bool isOldCSVM(int i);
-        bool isOldCSVT(int i);
-        bool isCSVL(int i);
-        bool isCSVM(int i);
-        bool isCSVT(int i);
+        bool isCSVL(int i, string dataset = "80X");
+        bool isCSVM(int i, string dataset = "80X");
+        bool isCSVT(int i, string dataset = "80X");
 	double JetEnergyCorrectionFactor( double jetRawPt, double jetEta, double jetPhi, double jetE,
 					  double rho, double jetArea,
 					  FactorizedJetCorrector *jetcorrector,  
+					  int jetCorrectionLevel = -1,
 					  bool printDebug = false);
 	double JetEnergySmearingFactor( double jetPt, double jetEta, double NPU, 
   					SimpleJetResolution *JetResolutionCalculator, 
-                                        TRandom3 *random, string option="");
+                                        TRandom3 *random);
+        double UpDownJetEnergySmearingFactor(double unsmearedPt, double jetEta, double NPU, 
+                                             SimpleJetResolution *JetResolutionCalculator, 
+                                             double smearedPt, string option);
         double BTagScaleFactor( double jetPt, bool CSVM, string option="");
 	
         //functions in RazorAuxMisc.cc
@@ -177,7 +166,8 @@ class RazorAnalyzer: public RazorEvents {
 	TLorentzVector makeTLorentzVectorPtEtaPhiM(double pt, double eta, double phi, double mass);
 	vector<TLorentzVector> getHemispheres(vector<TLorentzVector> jets);
 	std::vector< std::vector<int> > getHemispheresV2( std::vector<TLorentzVector> jets);
-	double computeMR(TLorentzVector hem1, TLorentzVector hem2);
+     
+    double computeMR(TLorentzVector hem1, TLorentzVector hem2);
         double computeRsq(TLorentzVector hem1, TLorentzVector hem2, TLorentzVector met);
 	double GetMT( TLorentzVector visible, TVector3 met );
 	double GetMTEnergy( TLorentzVector visible, TVector3 met );
@@ -185,14 +175,15 @@ class RazorAnalyzer: public RazorEvents {
 	double GetMTEnergy( TLorentzVector visible, TLorentzVector met );
 	double GetDphi( TLorentzVector visible, TVector3 met );
 	double GetDphi( TLorentzVector visible, TLorentzVector met );
+	
+    double GetAlphaT(vector<TLorentzVector> jets) ;
+    double GetDPhiMin(vector<TLorentzVector> jets);
 
         bool passesHadronicRazorBaseline(double MR, double Rsq);
         bool passesLeptonicRazorBaseline(double MR, double Rsq);
         int SubtractParticleFromCollection(TLorentzVector ToSubtract, vector<TLorentzVector>& Collection, float deltaRMatch=0.4);
 	
 	double calcMT2(float testMass, bool massive, std::vector<TLorentzVector> jets, TLorentzVector MET, int hemi_seed, int hemi_association);
-	
-
 	
 	//functions in src/RazorAuxGenLevel.cc
 	bool matchesGenMuon(double eta, double phi);

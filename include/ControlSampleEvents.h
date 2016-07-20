@@ -16,19 +16,25 @@ class ControlSampleEvents {
   
   /// bit map
   /// DON'T CHANGE ORDER
-  enum TreeType { kTreeType_Default = 0,	            // dummy	      
-		  kTreeType_OneLepton_Full = 1,             // lepton NOT added to MET
-		  kTreeType_OneLepton_Reduced = 2,          // lepton NOT added to MET
-		  kTreeType_OneLeptonAdd2MET_Full = 3,      // lepton added to MET
-		  kTreeType_OneLeptonAdd2MET_Reduced = 4,   // lepton added to MET
-		  kTreeType_Dilepton_Full = 5,              // lepton NOT added to MET
-		  kTreeType_Dilepton_Reduced = 6,           // lepton NOT added to MET
-		  kTreeType_DileptonAdd2MET_Full = 7,       // lepton added to MET
-		  kTreeType_DileptonAdd2MET_Reduced = 8,    // lepton added to MET
-		  kTreeType_Photon_Full = 9,                 // photon added to MET
-		  kTreeType_Photon_Reduced = 10,             // photon added to MET
-		  kTreeType_ZeroLepton_Full = 11,            // No Leptons, No Photons
-		  kTreeType_QCD_Full = 20,   
+  enum TreeType { kTreeType_Default = 0,	              // dummy	      
+		  kTreeType_OneLepton_Full = 1,               // lepton NOT added to MET
+		  kTreeType_OneLepton_Reduced = 2,            // lepton NOT added to MET
+		  kTreeType_OneLeptonAdd2MET_Full = 3,        // lepton added to MET
+		  kTreeType_OneLeptonAdd2MET_Reduced = 4,     // lepton added to MET
+		  kTreeType_Dilepton_Full = 5,                // lepton NOT added to MET
+		  kTreeType_Dilepton_Reduced = 6,             // lepton NOT added to MET
+		  kTreeType_DileptonAdd2MET_Full = 7,         // lepton added to MET
+		  kTreeType_DileptonAdd2MET_Reduced = 8,      // lepton added to MET
+		  kTreeType_Photon_Full = 9,                  // photon added to MET
+		  kTreeType_Photon_Reduced = 10,              // photon added to MET
+		  kTreeType_ZeroLepton_Full = 11,             // No Leptons, No Photons
+		  kTreeType_ZeroLepton_Reduced = 12,          // No Leptons, No Photons
+		  kTreeType_OneVetoLepton_Full = 13,          // lepton NOT added to MET
+		  kTreeType_OneVetoLepton_Reduced = 14,       // lepton NOT added to MET
+		  kTreeType_TightPlusVetoLepton_Full = 15,    // lepton NOT added to MET
+		  kTreeType_TightPlusVetoLepton_Reduced = 16, // lepton NOT added to MET
+		  kTreeType_OneTauLepton_Full = 17,           // lepton NOT added to MET
+		  kTreeType_OneTauLepton_Reduced = 18,        // lepton NOT added to MET
   };
   
   //*******************************************
@@ -48,7 +54,12 @@ class ControlSampleEvents {
 
   /// variables
   Int_t                   option;
+  Float_t                 genWeight;
   Float_t                 weight;
+  Float_t                 pileupWeight;
+  Float_t                 btagW;
+  Float_t                 btagW_up;
+  Float_t                 btagW_down;
   UInt_t                  run;
   UInt_t                  lumi;
   UInt_t                  event;
@@ -62,7 +73,8 @@ class ControlSampleEvents {
   TLorentzVector          genlep2;
   Int_t                   genlep1Type;
   Int_t                   genlep2Type;
-  Bool_t                  HLTDecision[150];
+  Bool_t                  HLTDecision[200];
+  Int_t                   HLTPrescale[200];
   Float_t                 lep1Pt;
   Float_t                 lep1Eta;
   TLorentzVector          lep1;
@@ -93,6 +105,7 @@ class ControlSampleEvents {
   Bool_t                  lep2PassTightIso;
   Float_t                 lep2MinDRToBJet;     
   Float_t                 lep2Activity;
+  Int_t                   NGenBJets;
   TLorentzVector          bjet1;
   TLorentzVector          bjet2;
   Bool_t                  bjet1PassLoose;
@@ -117,6 +130,7 @@ class ControlSampleEvents {
   Float_t                 MR_NoLeadJet;
   Float_t                 Rsq_NoLeadJet;
   Float_t                 MET;
+  Float_t                 METRaw;
   Float_t                 METnoHF;
   Float_t                 MET_NoDilepton;
   Float_t                 MET_NoLeadJet;
@@ -157,13 +171,20 @@ class ControlSampleEvents {
   Float_t                 recoZpt;
   Float_t                 recoWpt;
   Float_t                 recoWphi;
+  Float_t                 genZpt;
+  Float_t                 genZphi;
+  Float_t                 genWpt;
+  Float_t                 genWphi;
   Float_t                 MT2;
-     
+  Float_t                 genJetMR;
+  Float_t                 genJetHT;
+
   TLorentzVector          pho1;
   TLorentzVector          pho2;
   Bool_t                  pho1PassLoose;
   Bool_t                  pho1PassTight;
   Bool_t                  pho1PassMedium;
+  Bool_t                  pho1HLTFilter[50];
   Bool_t                  HLT_Dimuon;
   Bool_t                  HLT_SingleMu;
   Bool_t                  HLT_Photon;
@@ -193,14 +214,57 @@ class ControlSampleEvents {
   Float_t                 METPhi_NoW;
   Float_t                 METPhi_NoZ;
   Float_t                 METPhi;
+  Float_t                 METnoHFPhi;
+  Float_t                 METRawPhi;
   UInt_t                  NJets_NoZ;
   UInt_t                  NJets_NoW;
   UInt_t                  NJets_NoPho;
   UInt_t                  NJets80_NoZ;
   UInt_t                  NJets80_NoW;
   UInt_t                  NJets80_NoPho;
+  Int_t                   pho1_motherID;
+  Float_t                 pho1_sigmaietaieta; 
+  Float_t                 pho1_chargediso;
+  Float_t                 pho1_pfiso;
+  Float_t                 minDRGenPhotonToParton;
 
-
+  float metType1PtJetResUp;
+  float metType1PtJetResDown;
+  float metType1PtJetEnUp;
+  float metType1PtJetEnDown;
+  float metType1PtMuonEnUp;
+  float metType1PtMuonEnDown;
+  float metType1PtElectronEnUp;
+  float metType1PtElectronEnDown;
+  float metType1PtTauEnUp;
+  float metType1PtTauEnDown;
+  float metType1PtUnclusteredEnUp;
+  float metType1PtUnclusteredEnDown;
+  float metType1PtPhotonEnUp;
+  float metType1PtPhotonEnDown;       
+  float metType1PtMETUncertaintySize;
+  float metType1PtJetResUpSmear;
+  float metType1PtJetResDownSmear;
+  float metType1PtMETFullUncertaintySize;
+  
+  float metType1PhiJetResUp;
+  float metType1PhiJetResDown;
+  float metType1PhiJetEnUp;
+  float metType1PhiJetEnDown;
+  float metType1PhiMuonEnUp;
+  float metType1PhiMuonEnDown;
+  float metType1PhiElectronEnUp;
+  float metType1PhiElectronEnDown;
+  float metType1PhiTauEnUp;
+  float metType1PhiTauEnDown;
+  float metType1PhiUnclusteredEnUp;
+  float metType1PhiUnclusteredEnDown;
+  float metType1PhiPhotonEnUp;
+  float metType1PhiPhotonEnDown;
+  float metType1PhiMETUncertaintySize;
+  float metType1PhiJetResUpSmear;
+  float metType1PhiJetResDownSmear;
+  float metType1PhiMETFullUncertaintySize;
 
  public:
   /// this is the main element
@@ -232,7 +296,12 @@ class ControlSampleEvents {
   /// initialize varibles and fill list of available variables
   void InitVariables() {
     option               = -1;
+    genWeight            = 0.0;
     weight               = 0.0;
+    pileupWeight         = 0.0;
+    btagW                = 1.0;
+    btagW_up             = 1.0;
+    btagW_down           = 1.0;
     run                  = 0;
     lumi                 = 0;
     event                = 0;
@@ -246,7 +315,8 @@ class ControlSampleEvents {
     genlep2              = TLorentzVector();
     genlep1Type          = 0.0;
     genlep2Type          = 0.0;
-    for(int i=0;i<150;++i) HLTDecision[i] = false;
+    for(int i=0;i<200;++i) HLTDecision[i] = false;
+    for(int i=0;i<200;++i) HLTPrescale[i] = 0;
     lep1Pt               = 0.0;
     lep1Eta              = 0.0;
     lep1                 = TLorentzVector();
@@ -277,6 +347,7 @@ class ControlSampleEvents {
     lep2PassTightIso     = 0.0;
     lep2MinDRToBJet      = 0.0;
     lep2Activity         = 0.0;
+    NGenBJets            = -1;
     bjet1                = TLorentzVector();
     bjet2                = TLorentzVector();
     bjet1PassLoose       = 0.0;
@@ -302,6 +373,7 @@ class ControlSampleEvents {
     Rsq_NoLeadJet        = 0.0;
     MET                  = 0.0;
     METnoHF              = 0.0;
+    METRaw               = 0.0;
     MET_NoDilepton       = 0.0;
     MET_NoLeadJet        = 0.0;
     minDPhi              = 0.0;
@@ -340,8 +412,14 @@ class ControlSampleEvents {
     recoZpt         = -99.;
     recoWpt         = -99.;
     recoWphi        = -99.;
+    genWpt          = -99.;
+    genWphi         = -99.;
+    genZpt          = -99.;
+    genZphi         = -99.;
     MT2             = -99.;
-	
+    genJetHT        = -99.;
+    genJetMR        = -99.;
+
     pho1 = TLorentzVector();
     pho2 = TLorentzVector();
 
@@ -377,6 +455,8 @@ class ControlSampleEvents {
     METPhi_NoZ = -99.;
     METPhi_NoW = -99.;
     METPhi = -99.;
+    METRawPhi = -99.;
+    METnoHFPhi = -99.;
     u1 = -99.;
     u2 = -99.;
     NJets_NoZ = 0; 
@@ -385,6 +465,50 @@ class ControlSampleEvents {
     NJets80_NoZ = 0 ; 
     NJets80_NoW = 0 ; 
     NJets80_NoPho = 0 ; 
+    pho1_motherID = 0;
+    pho1_sigmaietaieta = -999.;
+    pho1_chargediso = -999.;
+    pho1_pfiso = -999.;
+    minDRGenPhotonToParton = -999;
+
+    metType1PtJetResUp=-999.;
+    metType1PtJetResDown=-999.;
+    metType1PtJetEnUp=-999.;
+    metType1PtJetEnDown=-999.;
+    metType1PtMuonEnUp=-999.;
+    metType1PtMuonEnDown=-999.;
+    metType1PtElectronEnUp=-999.;
+    metType1PtElectronEnDown=-999.;
+    metType1PtTauEnUp=-999.;
+    metType1PtTauEnDown=-999.;
+    metType1PtUnclusteredEnUp=-999.;
+    metType1PtUnclusteredEnDown=-999.;
+    metType1PtPhotonEnUp=-999.;
+    metType1PtPhotonEnDown=-999.;
+    metType1PtMETUncertaintySize=-999.;
+    metType1PtJetResUpSmear=-999.;
+    metType1PtJetResDownSmear=-999.;
+    metType1PtMETFullUncertaintySize=-999.;
+  
+    metType1PhiJetResUp=-999.;
+    metType1PhiJetResDown=-999.;
+    metType1PhiJetEnUp=-999.;
+    metType1PhiJetEnDown=-999.;
+    metType1PhiMuonEnUp=-999.;
+    metType1PhiMuonEnDown=-999.;
+    metType1PhiElectronEnUp=-999.;
+    metType1PhiElectronEnDown=-999.;
+    metType1PhiTauEnUp=-999.;
+    metType1PhiTauEnDown=-999.;
+    metType1PhiUnclusteredEnUp=-999.;
+    metType1PhiUnclusteredEnDown=-999.;
+    metType1PhiPhotonEnUp=-999.;
+    metType1PhiPhotonEnDown=-999.;
+    metType1PhiMETUncertaintySize=-999.;
+    metType1PhiJetResUpSmear=-999.;
+    metType1PhiJetResDownSmear=-999.;
+    metType1PhiMETFullUncertaintySize=-999.;
+
 
   }
     
@@ -404,7 +528,12 @@ class ControlSampleEvents {
 
     //book the branches that go in all types of trees
     tree_->Branch("option",&option,"option/I");
+    tree_->Branch("genWeight",&genWeight,"genWeight/F");
     tree_->Branch("weight",&weight,"weight/F");
+    tree_->Branch("pileupWeight",&pileupWeight,"pileupWeight/F");
+    tree_->Branch("btagW",&btagW,"btagW/F");
+    tree_->Branch("btagW_up",&btagW_up,"btagW_up/F");
+    tree_->Branch("btagW_down",&btagW_down,"btagW_down/F");
     tree_->Branch("run",&run,"run/i");
     tree_->Branch("lumi",&lumi,"lumi/i");
     tree_->Branch("event",&event,"event/i");
@@ -412,12 +541,15 @@ class ControlSampleEvents {
     tree_->Branch("NPV",&NPV,"NPV/i");
     tree_->Branch("MR",&MR,"MR/F");
     tree_->Branch("Rsq",&Rsq,"Rsq/F");
+    tree_->Branch("MET",&MET,"MET/F");
     tree_->Branch("NJets40",&NJets40,"NJets40/i");
     tree_->Branch("NJets80",&NJets80,"NJets80/i");
+    tree_->Branch("NGenBJets",&NGenBJets,"NGenBJets/I");
     tree_->Branch("NBJetsLoose",&NBJetsLoose,"NBJetsLoose/i");
     tree_->Branch("NBJetsMedium",&NBJetsMedium,"NBJetsMedium/i");
     tree_->Branch("NBJetsTight",&NBJetsTight,"NBJetsTight/i");
   
+
     // noise filters
     tree_->Branch("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter,"Flag_HBHENoiseFilter/O");
     tree_->Branch("Flag_CSCTightHaloFilter", &Flag_CSCTightHaloFilter,"Flag_CSCTightHaloFilter/O");
@@ -434,7 +566,11 @@ class ControlSampleEvents {
     tree_->Branch("Flag_METFilters", &Flag_METFilters,"Flag_METFilters/O");	
 
     // book the branches that go into only One Lepton trees
-    if (treeType == kTreeType_OneLepton_Reduced ) {
+    if (treeType == kTreeType_OneLepton_Reduced 
+	|| treeType == kTreeType_ZeroLepton_Reduced 
+	|| treeType == kTreeType_OneVetoLepton_Reduced 
+	|| treeType == kTreeType_OneTauLepton_Reduced 
+	) {
       tree_->Branch("genlep1Type",&genlep1Type,"genlep1Type/I");
       tree_->Branch("lep1Type",&lep1Type,"lep1Type/I");
       tree_->Branch("lep1PassVeto",&lep1PassVeto,"lep1PassVeto/O");
@@ -444,20 +580,58 @@ class ControlSampleEvents {
       tree_->Branch("lep1MT",&lep1MT,"lep1MT/F");
       tree_->Branch("lep1MTnoHF",&lep1MTnoHF,"lep1MTnoHF/F");
       tree_->Branch("MET",&MET,"MET/F");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("METPhi",&METPhi,"METPhi/F");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
       tree_->Branch("HT",&HT,"HT/F");
       tree_->Branch("lep1Pt",&lep1Pt,"lep1Pt/F");
       tree_->Branch("lep1Eta",&lep1Eta,"lep1Eta/F");
       tree_->Branch("METnoHF", &METnoHF, "METnoHF/F");
       tree_->Branch("RsqnoHF", &RsqnoHF, "RsqnoHF/F");
-    }
+      tree_->Branch("MHT", &MHT, "MHT/F");
+      tree_->Branch("MHTnoHF", &MHTnoHF, "MHTnoHF/F");
+      tree_->Branch("lep1" ,&lep1Ptr);
+
+      tree_->Branch("metType1PtJetResUp", &metType1PtJetResUp, "metType1PtJetResUp/F");
+      tree_->Branch("metType1PtJetResDown", &metType1PtJetResDown, "metType1PtJetResDown/F");
+      tree_->Branch("metType1PtJetEnUp", &metType1PtJetEnUp, "metType1PtJetEnUp/F");
+      tree_->Branch("metType1PtJetEnDown", &metType1PtJetEnDown, "metType1PtJetEnDown/F");
+      tree_->Branch("metType1PtMuonEnUp", &metType1PtMuonEnUp, "metType1PtMuonEnUp/F");
+      tree_->Branch("metType1PtMuonEnDown", &metType1PtMuonEnDown, "metType1PtMuonEnDown/F");
+      tree_->Branch("metType1PtElectronEnUp", &metType1PtElectronEnUp, "metType1PtElectronEnUp/F");
+      tree_->Branch("metType1PtElectronEnDown", &metType1PtElectronEnDown, "metType1PtElectronEnDown/F");
+      tree_->Branch("metType1PtTauEnUp", &metType1PtTauEnUp, "metType1PtTauEnUp/F");
+      tree_->Branch("metType1PtTauEnDown", &metType1PtTauEnDown, "metType1PtTauEnDown/F");
+      tree_->Branch("metType1PtUnclusteredEnUp", &metType1PtUnclusteredEnUp, "metType1PtUnclusteredEnUp/F");
+      tree_->Branch("metType1PtUnclusteredEnDown", &metType1PtUnclusteredEnDown, "metType1PtUnclusteredEnDown/F");
+      tree_->Branch("metType1PtPhotonEnUp", &metType1PtPhotonEnUp, "metType1PtPhotonEnUp/F");
+      tree_->Branch("metType1PtPhotonEnDown", &metType1PtPhotonEnDown, "metType1PtPhotonEnDown/F");
+      
+      tree_->Branch("metType1PhiJetResUp", &metType1PhiJetResUp, "metType1PhiJetResUp/F");
+      tree_->Branch("metType1PhiJetResDown", &metType1PhiJetResDown, "metType1PhiJetResDown/F");
+      tree_->Branch("metType1PhiJetEnUp", &metType1PhiJetEnUp, "metType1PhiJetEnUp/F");
+      tree_->Branch("metType1PhiJetEnDown", &metType1PhiJetEnDown, "metType1PhiJetEnDown/F");
+      tree_->Branch("metType1PhiMuonEnUp", &metType1PhiMuonEnUp, "metType1PhiMuonEnUp/F");
+      tree_->Branch("metType1PhiMuonEnDown", &metType1PhiMuonEnDown, "metType1PhiMuonEnDown/F");
+      tree_->Branch("metType1PhiElectronEnUp", &metType1PhiElectronEnUp, "metType1PhiElectronEnUp/F");
+      tree_->Branch("metType1PhiElectronEnDown", &metType1PhiElectronEnDown, "metType1PhiElectronEnDown/F");
+      tree_->Branch("metType1PhiTauEnUp", &metType1PhiTauEnUp, "metType1PhiTauEnUp/F");
+      tree_->Branch("metType1PhiTauEnDown", &metType1PhiTauEnDown, "metType1PhiTauEnDown/F");
+      tree_->Branch("metType1PhiUnclusteredEnUp", &metType1PhiUnclusteredEnUp, "metType1PhiUnclusteredEnUp/F");
+      tree_->Branch("metType1PhiUnclusteredEnDown", &metType1PhiUnclusteredEnDown, "metType1PhiUnclusteredEnDown/F");
+      tree_->Branch("metType1PhiPhotonEnUp", &metType1PhiPhotonEnUp, "metType1PhiPhotonEnUp/F");
+      tree_->Branch("metType1PhiPhotonEnDown", &metType1PhiPhotonEnDown, "metType1PhiPhotonEnDown/F");
+   }
   
-    if (treeType == kTreeType_OneLepton_Full) {
+    if (treeType == kTreeType_OneLepton_Full
+	|| treeType == kTreeType_ZeroLepton_Full 
+	|| treeType == kTreeType_OneVetoLepton_Full 
+	|| treeType == kTreeType_OneTauLepton_Full 
+	) {
       tree_->Branch("NPU_Minus1",&NPU_Minus1,"NPU_Minus1/i");
       tree_->Branch("NPU_Plus1",&NPU_Plus1,"NPU_Plus1/i");
       tree_->Branch("event",&event,"event/i");
       tree_->Branch("processID",&processID,"processID/i");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
       tree_->Branch("genlep1Type",&genlep1Type,"genlep1Type/I");
       tree_->Branch("lep1Type",&lep1Type,"lep1Type/I");
       tree_->Branch("lep1PassVeto",&lep1PassVeto,"lep1PassVeto/O");
@@ -469,6 +643,10 @@ class ControlSampleEvents {
       tree_->Branch("MET",&MET,"MET/F");
       tree_->Branch("METPhi",&METPhi,"METPhi/F");
       tree_->Branch("METnoHF", &METnoHF, "METnoHF/F");
+      tree_->Branch("METnoHFPhi",&METnoHFPhi,"METnoHFPhi/F");
+      tree_->Branch("METRaw",&METRaw,"METRaw/F");
+      tree_->Branch("METRawPhi",&METRawPhi,"METRawPhi/F");
+
       tree_->Branch("bjet1PassLoose",&bjet1PassLoose,"bjet1PassLoose/O");
       tree_->Branch("bjet1PassMedium",&bjet1PassMedium,"bjet1PassMedium/O");
       tree_->Branch("bjet1PassTight",&bjet1PassTight,"bjet1PassTight/O");
@@ -483,6 +661,8 @@ class ControlSampleEvents {
       tree_->Branch("jet2PassCSVTight",&jet2PassCSVTight,"jet2PassCSVTight/O");
       tree_->Branch("dPhiRazor",&dPhiRazor,"dPhiRazor/F");
       tree_->Branch("HT",&HT,"HT/F");	  
+      tree_->Branch("genWpt",&genWpt,"genWpt/F");
+      tree_->Branch("genWphi",&genWphi,"genWphi/F");
       tree_->Branch("genlep1", "TLorentzVector", &genlep1Ptr);
       tree_->Branch("lep1",    "TLorentzVector", &lep1Ptr);
       tree_->Branch("bjet1",   "TLorentzVector", &bjet1Ptr);
@@ -491,12 +671,14 @@ class ControlSampleEvents {
       tree_->Branch("jet2",    "TLorentzVector", &jet2Ptr);
     }
   
-    if (treeType == kTreeType_Dilepton_Full) {
+    if (treeType == kTreeType_Dilepton_Full
+	|| treeType == kTreeType_TightPlusVetoLepton_Full
+	) {
       tree_->Branch("NPU_Minus1",&NPU_Minus1,"NPU_Minus1/i");
       tree_->Branch("NPU_Plus1",&NPU_Plus1,"NPU_Plus1/i");
       tree_->Branch("event",&event,"event/i");
       tree_->Branch("processID",&processID,"processID/i");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
       tree_->Branch("genlep1Type",&genlep1Type,"genlep1Type/I");
       tree_->Branch("lep1Type",&lep1Type,"lep1Type/I");
       tree_->Branch("lep1MatchedGenLepIndex",&lep1MatchedGenLepIndex,"lep1MatchedGenLepIndex/I");
@@ -542,8 +724,13 @@ class ControlSampleEvents {
       tree_->Branch("MET",&MET,"MET/F");
       tree_->Branch("METPhi",&METPhi,"METPhi/F");
       tree_->Branch("METnoHF", &METnoHF, "METnoHF/F");
+      tree_->Branch("METnoHFPhi", &METnoHFPhi, "METnoHFPhi/F");
+      tree_->Branch("METRaw", &METRaw, "METRaw/F");
+      tree_->Branch("METRawPhi", &METRawPhi, "METRawPhi/F");
       tree_->Branch("dPhiRazor",&dPhiRazor,"dPhiRazor/F");
       tree_->Branch("HT",&HT,"HT/F");	  
+      tree_->Branch("genZpt",&genZpt,"genZpt/F");
+      tree_->Branch("genZphi",&genZphi,"genZphi/F");
       tree_->Branch("genlep1", "TLorentzVector", &genlep1Ptr);
       tree_->Branch("genlep2", "TLorentzVector", &genlep2Ptr);
       tree_->Branch("lep1",    "TLorentzVector", &lep1Ptr);
@@ -557,6 +744,9 @@ class ControlSampleEvents {
     if (treeType == kTreeType_OneLeptonAdd2MET_Full ) {
       tree_->Branch("lep1",    "TLorentzVector", &lep1Ptr);
       tree_->Branch("lep1Type", &lep1Type, "lep1Type/I");
+      tree_->Branch("lep1PassVeto",&lep1PassVeto,"lep1PassVeto/O");
+      tree_->Branch("lep1PassLoose",&lep1PassLoose,"lep1PassLoose/O");
+      tree_->Branch("lep1PassTight",&lep1PassTight,"lep1PassTight/O");
       tree_->Branch("MET",&MET,"MET/F");
       tree_->Branch("METPhi",&METPhi,"METPhi/F");
       tree_->Branch("MR_NoW",&MR_NoW,"MR_NoW/F");
@@ -573,9 +763,11 @@ class ControlSampleEvents {
       tree_->Branch("nTightMuons",&nTightMuons,"nTightMuons/i");
       tree_->Branch("lep1MT",&lep1MT,"lep1MT/F");
       tree_->Branch("HLT_SingleMu",&HLT_SingleMu,"HLT_SingleMu/O");
+      tree_->Branch("genWpt",&genWpt,"genWpt/F");
+      tree_->Branch("genWphi",&genWphi,"genWphi/F");
       tree_->Branch("recoWpt",&recoWpt,"recoWpt/F");
       tree_->Branch("recoWphi",&recoWphi,"recoWphi/F");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
     }
   
     if (treeType == kTreeType_DileptonAdd2MET_Full ) {
@@ -583,6 +775,12 @@ class ControlSampleEvents {
       tree_->Branch("lep2",    "TLorentzVector", &lep2Ptr);
       tree_->Branch("lep1Type",&lep1Type,"lep1Type/I");
       tree_->Branch("lep2Type",&lep2Type,"lep2Type/I");
+      tree_->Branch("lep1PassVeto",&lep1PassVeto,"lep1PassVeto/O");
+      tree_->Branch("lep1PassLoose",&lep1PassLoose,"lep1PassLoose/O");
+      tree_->Branch("lep1PassTight",&lep1PassTight,"lep1PassTight/O");
+      tree_->Branch("lep2PassVeto",&lep2PassVeto,"lep2PassVeto/O");
+      tree_->Branch("lep2PassLoose",&lep2PassLoose,"lep2PassLoose/O");
+      tree_->Branch("lep2PassTight",&lep2PassTight,"lep2PassTight/O");
       tree_->Branch("MET",&MET,"MET/F");
       tree_->Branch("u1",&u1,"u1/F");
       tree_->Branch("u2",&u2,"u2/F");
@@ -595,6 +793,8 @@ class ControlSampleEvents {
       tree_->Branch("dPhiRazor_NoZ",&dPhiRazor_NoZ,"dPhiRazor_NoZ/F");
       tree_->Branch("recoZmass",&recoZmass,"recoZmass/F");
       tree_->Branch("recoZpt",&recoZpt,"recoZpt/F");
+      tree_->Branch("genZpt",&genZpt,"genZpt/F");
+      tree_->Branch("genZphi",&genZphi,"genZphi/F");
       tree_->Branch("NJets_NoZ",&NJets_NoZ,"NJets_NoZ/i");
       tree_->Branch("NJets80_NoZ",&NJets80_NoZ,"NJets80_NoZ/i");
       tree_->Branch("nVetoMuons",&nVetoMuons,"nVetoMuons/i");
@@ -602,13 +802,16 @@ class ControlSampleEvents {
       tree_->Branch("nMediumMuons",&nMediumMuons,"nMediumMuons/i");
       tree_->Branch("nTightMuons",&nTightMuons,"nTightMuons/i");
       tree_->Branch("HLT_Dimuon",&HLT_Dimuon,"HLT_Dimuon/O");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
     }
     
     // fill the photon tree
     if (treeType == kTreeType_Photon_Full) {
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
+      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[200]/O");
+      tree_->Branch("HLTPrescale",&HLTPrescale,"HLTPrescale[200]/I");
+      tree_->Branch("pho1HLTFilter",&pho1HLTFilter,"HLTDecision[50]/O");
       tree_->Branch("pho1","TLorentzVector", &pho1Ptr);
+      tree_->Branch("pho2","TLorentzVector", &pho2Ptr);
       tree_->Branch("jet1",    "TLorentzVector", &jet1Ptr);
       tree_->Branch("jet2",    "TLorentzVector", &jet2Ptr);
 	  
@@ -624,27 +827,16 @@ class ControlSampleEvents {
       tree_->Branch("nSelectedPhotons",&nSelectedPhotons,"nSelectedPhotons/i");
       tree_->Branch("NJets_NoPho",&NJets_NoPho,"NJets_NoPho/i");
       tree_->Branch("NJets80_NoPho",&NJets80_NoPho,"NJets80_NoPho/i");
+      tree_->Branch("pho1_motherID",&pho1_motherID,"pho1_motherID/I");
+      tree_->Branch("pho1_sigmaietaieta",&pho1_sigmaietaieta,"pho1_sigmaietaieta/F");
+      tree_->Branch("pho1_chargediso",&pho1_chargediso,"pho1_chargediso/F");
+      tree_->Branch("pho1_pfiso",&pho1_pfiso,"pho1_pfiso/F");
+      tree_->Branch("pho1PassTight",&pho1PassTight,"pho1PassTight/O");
+      tree_->Branch("minDRGenPhotonToParton",&minDRGenPhotonToParton,"minDRGenPhotonToParton/F");
 
-    }
-  
-    if (treeType == kTreeType_QCD_Full) {
-      tree_->Branch("NPU_Minus1",&NPU_Minus1,"NPU_Minus1/i");
-      tree_->Branch("NPU_Plus1",&NPU_Plus1,"NPU_Plus1/i");
-      tree_->Branch("event",&event,"event/i");
-      tree_->Branch("processID",&processID,"processID/i");
-      tree_->Branch("HLTDecision",&HLTDecision,"HLTDecision[150]/O");
-      tree_->Branch("lep1MT",&lep1MT,"lep1MT/F");
-      tree_->Branch("MET",&MET,"MET/F");
-      tree_->Branch("minDPhi",&minDPhi,"minDPhi/F"); 
-      tree_->Branch("minDPhiN",&minDPhiN,"minDPhiN/F");
-      tree_->Branch("dPhiRazor",&dPhiRazor,"dPhiRazor/F");
-      tree_->Branch("HT",&HT,"HT/F");	  
-      tree_->Branch("bjet1",   "TLorentzVector", &bjet1Ptr);
-      tree_->Branch("bjet2",   "TLorentzVector", &bjet2Ptr);
-      tree_->Branch("jet1",    "TLorentzVector", &jet1Ptr);
-      tree_->Branch("jet2",    "TLorentzVector", &jet2Ptr);
-    }
-
+      tree_->Branch("genJetHT",&genJetHT,"genJetHT/F");
+      tree_->Branch("genJetMR",&genJetMR,"genJetMR/F");
+    }  
   }
   
 
@@ -658,7 +850,12 @@ class ControlSampleEvents {
     Int_t currentState = gErrorIgnoreLevel;
 
     tree_->SetBranchAddress("option",&option);
+    tree_->SetBranchAddress("genWeight",&genWeight);
     tree_->SetBranchAddress("weight",&weight);
+    tree_->SetBranchAddress("pileupWeight",&pileupWeight);
+    tree_->SetBranchAddress("btagW",&btagW);
+    tree_->SetBranchAddress("btagW_up",&btagW_up);
+    tree_->SetBranchAddress("btagW_down",&btagW_down);
     tree_->SetBranchAddress("run",&run);
     tree_->SetBranchAddress("lumi",&lumi);
     tree_->SetBranchAddress("NPU_0",&NPU_0);
@@ -667,6 +864,7 @@ class ControlSampleEvents {
     tree_->SetBranchAddress("Rsq",&Rsq);
     tree_->SetBranchAddress("NJets40",&NJets40);
     tree_->SetBranchAddress("NJets80",&NJets80);
+    tree_->SetBranchAddress("NGenBJets",&NGenBJets);
     tree_->SetBranchAddress("NBJetsLoose",&NBJetsLoose);
     tree_->SetBranchAddress("NBJetsMedium",&NBJetsMedium);
     tree_->SetBranchAddress("NBJetsTight",&NBJetsTight);
@@ -686,7 +884,28 @@ class ControlSampleEvents {
     tree_->SetBranchAddress("Flag_METFilters", &Flag_METFilters);
 
     // book the branches that go into only One Lepton trees
-    if (treeType == kTreeType_OneLepton_Reduced) {
+    if (treeType == kTreeType_OneLepton_Reduced
+	|| treeType == kTreeType_ZeroLepton_Reduced
+	|| treeType == kTreeType_OneVetoLepton_Reduced
+	|| treeType == kTreeType_OneTauLepton_Reduced
+	) {
+      tree_->SetBranchStatus("*", 0);
+      tree_->SetBranchStatus("lep1Type", 1);
+      tree_->SetBranchStatus("lep1PassTight", 1);
+      tree_->SetBranchStatus("lep1MT", 1);
+      tree_->SetBranchStatus("lep1Pt", 1);
+      tree_->SetBranchStatus("lep1Eta", 1);
+      tree_->SetBranchStatus("MET", 1);
+      tree_->SetBranchStatus("weight", 1);
+      tree_->SetBranchStatus("pileupWeight", 1);
+      tree_->SetBranchStatus("MR", 1);
+      tree_->SetBranchStatus("Rsq", 1);
+      tree_->SetBranchStatus("NJets40", 1);
+      tree_->SetBranchStatus("NJets80", 1);
+      tree_->SetBranchStatus("NBJetsLoose", 1);
+      tree_->SetBranchStatus("NBJetsMedium", 1);
+      tree_->SetBranchStatus("HLTDecision", 1);
+      
       tree_->SetBranchAddress("genlep1Type",&genlep1Type);
       tree_->SetBranchAddress("lep1Type",&lep1Type);
       tree_->SetBranchAddress("lep1PassVeto",&lep1PassVeto);
@@ -695,6 +914,7 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("lep1MatchedGenLepIndex",&lep1MatchedGenLepIndex);
       tree_->SetBranchAddress("lep1MT",&lep1MT);	
       tree_->SetBranchAddress("MET",&MET);
+      tree_->SetBranchAddress("METPhi",&METPhi);
       tree_->SetBranchAddress("METnoHF",&METnoHF);
       tree_->SetBranchAddress("HT",&HT);
       tree_->SetBranchAddress("HLTDecision",&HLTDecision);
@@ -702,9 +922,14 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("lep1Eta",&lep1Eta);
       tree_->SetBranchAddress("MHT",&MHT);
       tree_->SetBranchAddress("MHTnoHF",&MHTnoHF);
-    }
+      tree_->SetBranchAddress("lep1" ,&lep1Ptr);
+   }
 
-    if (treeType == kTreeType_OneLepton_Full) {
+    if (treeType == kTreeType_OneLepton_Full
+	|| treeType == kTreeType_ZeroLepton_Full	
+	|| treeType == kTreeType_OneVetoLepton_Full
+	|| treeType == kTreeType_OneTauLepton_Full
+	) {
       tree_->SetBranchAddress("NPU_Minus1",&NPU_Minus1);
       tree_->SetBranchAddress("NPU_Plus1",&NPU_Plus1);
       tree_->SetBranchAddress("event",&event);
@@ -719,7 +944,11 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("lep1MT",&lep1MT);
       tree_->SetBranchAddress("lep1Activity",&lep1Activity);
       tree_->SetBranchAddress("MET",&MET);
+      tree_->SetBranchAddress("METPhi",&METPhi);
       tree_->SetBranchAddress("METnoHF",&METnoHF);
+      tree_->SetBranchAddress("METnoHFPhi",&METnoHFPhi);
+      tree_->SetBranchAddress("METRaw",&METRaw);
+      tree_->SetBranchAddress("METRawPhi",&METRawPhi);
       tree_->SetBranchAddress("bjet1PassLoose",&bjet1PassLoose);
       tree_->SetBranchAddress("bjet1PassMedium",&bjet1PassMedium);
       tree_->SetBranchAddress("bjet1PassTight",&bjet1PassTight);
@@ -734,6 +963,10 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("jet2PassCSVTight",&jet2PassCSVTight);
       tree_->SetBranchAddress("dPhiRazor",&dPhiRazor);
       tree_->SetBranchAddress("HT",&HT);
+      tree_->SetBranchAddress("genWpt",&genWpt);
+      tree_->SetBranchAddress("genWphi",&genWphi);
+      tree_->SetBranchAddress("genWpt",  &genWpt);
+      tree_->SetBranchAddress("genWphi",  &genWphi);
       tree_->SetBranchAddress("genlep1",  &genlep1Ptr);
       tree_->SetBranchAddress("lep1",     &lep1Ptr);
       tree_->SetBranchAddress("bjet1",    &bjet1Ptr);
@@ -742,7 +975,9 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("jet2",     &jet2Ptr);
     }
   
-    if (treeType == kTreeType_Dilepton_Full) {
+    if (treeType == kTreeType_Dilepton_Full
+	|| treeType == kTreeType_TightPlusVetoLepton_Full
+	) {
       tree_->SetBranchAddress("NPU_Minus1",&NPU_Minus1);
       tree_->SetBranchAddress("NPU_Plus1",&NPU_Plus1);
       tree_->SetBranchAddress("event",&event);
@@ -793,8 +1028,13 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("MET",&MET);
       tree_->SetBranchAddress("METPhi",&METPhi);
       tree_->SetBranchAddress("METnoHF",&METnoHF);
+      tree_->SetBranchAddress("METnoHFPhi",&METnoHFPhi);
+      tree_->SetBranchAddress("METRaw",&METRaw);
+      tree_->SetBranchAddress("METRawPhi",&METRawPhi);
       tree_->SetBranchAddress("dPhiRazor",&dPhiRazor);
       tree_->SetBranchAddress("HT",&HT);
+      tree_->SetBranchAddress("genZpt",&genZpt);
+      tree_->SetBranchAddress("genZphi",&genZphi);
       tree_->SetBranchAddress("genlep1",  &genlep1Ptr);
       tree_->SetBranchAddress("genlep2",  &genlep2Ptr);
       tree_->SetBranchAddress("lep1",     &lep1Ptr);
@@ -826,6 +1066,8 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("nTightMuons",&nTightMuons);
       tree_->SetBranchAddress("lep1MT",&lep1MT);
       tree_->SetBranchAddress("HLT_SingleMu",&HLT_SingleMu);
+      tree_->SetBranchAddress("genWpt",&genWpt);
+      tree_->SetBranchAddress("genWphi",&genWphi);
       tree_->SetBranchAddress("recoWpt",&recoWpt);
       tree_->SetBranchAddress("recoWphi",&recoWphi);
       tree_->SetBranchAddress("HLTDecision",&HLTDecision);
@@ -848,6 +1090,8 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("dPhiRazor_NoZ", &dPhiRazor_NoZ);
       tree_->SetBranchAddress("recoZmass",     &recoZmass);
       tree_->SetBranchAddress("recoZpt",       &recoZpt);
+      tree_->SetBranchAddress("genZpt",        &genZpt);
+      tree_->SetBranchAddress("genZphi",       &genZphi);
       tree_->SetBranchAddress("NJets_NoZ",     &NJets_NoZ);
       tree_->SetBranchAddress("NJets80_NoZ",   &NJets80_NoZ);
       tree_->SetBranchAddress("nVetoMuons",    &nVetoMuons);
@@ -861,7 +1105,10 @@ class ControlSampleEvents {
     // fill the photon tree
     if (treeType == kTreeType_Photon_Full) {
       tree_->SetBranchAddress("HLTDecision",&HLTDecision);
+      tree_->SetBranchAddress("HLTPrescale",&HLTPrescale);
+      tree_->SetBranchAddress("pho1HLTFilter",&pho1HLTFilter);
       tree_->SetBranchAddress("pho1", &pho1Ptr);
+      tree_->SetBranchAddress("pho2", &pho2Ptr);
       tree_->SetBranchAddress("jet1" ,&jet1Ptr);
       tree_->SetBranchAddress("jet2" ,&jet2Ptr);
 	  
@@ -873,43 +1120,20 @@ class ControlSampleEvents {
       tree_->SetBranchAddress("dPhiRazor_NoPho",&dPhiRazor_NoPho);
       tree_->SetBranchAddress("NJets_NoPho",&NJets_NoPho);
       tree_->SetBranchAddress("NJets80_NoPho",&NJets80_NoPho);
-      tree_->SetBranchAddress("MT2",&MT2);
-
-      tree_->SetBranchAddress("pho1PassLoose", &pho1PassLoose);
-      tree_->SetBranchAddress("pho1PassMedium",&pho1PassMedium);
-      tree_->SetBranchAddress("pho1PassTight", &pho1PassTight);
-      tree_->SetBranchAddress("HLT_Photon", &HLT_Photon);
-      tree_->SetBranchAddress("HLT_Photon36", &HLT_Photon36);
-      tree_->SetBranchAddress("HLT_Photon50", &HLT_Photon50);
-      tree_->SetBranchAddress("HLT_Photon75", &HLT_Photon75);
-      tree_->SetBranchAddress("HLT_Photon90", &HLT_Photon90);
-      tree_->SetBranchAddress("HLT_Photon120", &HLT_Photon120);
-      tree_->SetBranchAddress("HLT_Photon165", &HLT_Photon165);
 
       tree_->SetBranchAddress("nSelectedPhotons",&nSelectedPhotons);
       tree_->SetBranchAddress("NJets_NoPho",&NJets_NoPho);
       tree_->SetBranchAddress("NJets80_NoPho",&NJets80_NoPho);
+      tree_->SetBranchAddress("pho1_motherID",&pho1_motherID);
+      tree_->SetBranchAddress("pho1_sigmaietaieta",&pho1_sigmaietaieta);
+      tree_->SetBranchAddress("pho1_chargediso",&pho1_chargediso);
+      tree_->SetBranchAddress("pho1_pfiso",&pho1_pfiso);
+      tree_->SetBranchAddress("pho1PassTight",&pho1PassTight);
+      tree_->SetBranchAddress("minDRGenPhotonToParton",&minDRGenPhotonToParton);
+      tree_->SetBranchAddress("genJetMR",&genJetMR);
+      tree_->SetBranchAddress("genJetHT",&genJetHT);     
     }
     
-   if (treeType == kTreeType_QCD_Full) {
-      tree_->SetBranchAddress("NPU_Minus1",&NPU_Minus1);
-      tree_->SetBranchAddress("NPU_Plus1",&NPU_Plus1);
-      tree_->SetBranchAddress("event",&event);
-      tree_->SetBranchAddress("processID",&processID);
-      tree_->SetBranchAddress("HLTDecision",&HLTDecision);
-      tree_->SetBranchAddress("lep1MT",&lep1MT);
-      tree_->SetBranchAddress("MET",&MET);
-      tree_->SetBranchAddress("minDPhi",&minDPhi);
-      tree_->SetBranchAddress("minDPhiN",&minDPhiN);
-      tree_->SetBranchAddress("dPhiRazor",&dPhiRazor);
-      tree_->SetBranchAddress("HT",&HT);
-      tree_->SetBranchAddress("bjet1",    &bjet1Ptr);
-      tree_->SetBranchAddress("bjet2",    &bjet2Ptr);
-      tree_->SetBranchAddress("jet1",     &jet1Ptr);
-      tree_->SetBranchAddress("jet2",     &jet2Ptr);
-    }
-
-
     gErrorIgnoreLevel = currentState;
   }
 

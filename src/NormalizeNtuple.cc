@@ -6,8 +6,28 @@
 #include "TH1F.h"
 #include "SimpleTable.h"
 #include "TKey.h"
+#include <assert.h>
+#include <TRandom3.h>
+#include "TTreeFormula.h"
 
 using namespace std;
+
+
+std::string ParseCommandLine( int argc, char* argv[], std::string opt )
+{
+  for (int i = 1; i < argc; i++ )
+    {
+      std::string tmp( argv[i] );
+      if ( tmp.find( opt ) != std::string::npos )
+        {
+          if ( tmp.find( "=" )  != std::string::npos ) return tmp.substr( tmp.find_last_of("=") + 1 );
+	  if ( tmp.find( "--" ) != std::string::npos ) return "yes";
+	}
+    }
+  
+  return "";
+};
+
 
 // Get total number of events in the sample and determine normalization weight factor
 double getNormalizationWeight(string filename, string datasetName, double intLumi) {
@@ -35,7 +55,7 @@ double getNormalizationWeight(string filename, string datasetName, double intLum
   double CrossSection = xstab.Get(datasetName.c_str());  
   double Weight = CrossSection * intLumi / NEvents;
   // weight for data is always 1 (-1 to make a trick for fakes)
-  if(CrossSection < 0) Weight = -1.0;
+  //if(CrossSection < 0) Weight = -1.0;
 
   cout << "Cross Section = " << CrossSection << " for dataset " << datasetName << "\n";
   cout << "Events get weight: " << Weight << "\n";
@@ -72,6 +92,21 @@ int main(int argc, char* argv[]) {
         else cout << "(Skipping commented line in input)" << endl;
     }
 
+
+    //*************************************
+    //Option to do Unweighting
+    //*************************************
+    std::string _doUnweight = ParseCommandLine( argc, argv, "--doUnweight" );
+    bool doUnweight = false;
+    if ( _doUnweight == "yes" ) doUnweight = true;
+
+    
+    int randomSeed = 0;
+    std::string _randomSeed = ParseCommandLine( argc, argv, "--seed=" );
+    if (_randomSeed != "") randomSeed = atoi( _randomSeed.c_str());
+    if (doUnweight) cout << "Use Random Seed = " << randomSeed << "\n";
+    TRandom3 random(randomSeed);
+
     //open each ROOT file and add the normalization branch
     for(auto& line : inputLines){
         //parse input -- input lines should be in the form datasetName fileName
@@ -89,18 +124,30 @@ int main(int argc, char* argv[]) {
         TFile *outputFile = new TFile(Form("%s_%.0fpb_weighted.root", (fileName.substr(0, fileName.find_last_of("."))).c_str(), intLumi), "RECREATE");
 
         //loop over all TTrees in the file and add the weight branch to each of them
-        TFile inputFile(fileName.c_str(), "READ");
-        inputFile.cd();
-        inputFile.Purge(); //purge unwanted TTree cycles in file
-        TIter nextkey(inputFile.GetListOfKeys());
+        TFile *inputFile = TFile::Open(fileName.c_str(), "READ");
+        assert(inputFile);
+        inputFile->cd();
+        TIter nextkey(inputFile->GetListOfKeys());
         TKey *key;
+        TKey *previous = NULL;
         while((key = (TKey*)nextkey())){
             string className = key->GetClassName();
             cout << "Getting key from file.  Class type: " << className << endl;
             if(className.compare("TTree") != 0){
                 cout << "Skipping key (not a TTree)" << endl;
+                outputFile->cd();
+                TObject *outObj = key->ReadObj();
+                outObj->Write();
+                inputFile->cd();
                 continue;
             }
+
+            //if this key has the same name as the previous one, it's an unwanted cycle and we skip it
+            if(previous != NULL && strcmp(key->GetName(), previous->GetName()) == 0)
+            {
+                continue;
+            }
+            previous = key;
 
             TTree *inputTree = (TTree*)key->ReadObj();
             cout << "Processing tree " << inputTree->GetName() << endl;
@@ -137,14 +184,36 @@ int main(int argc, char* argv[]) {
 		    weight = normalizationWeight;
 		  }
                 } 
-                normalizedTree->Fill(); 
+
+		if (!doUnweight) {
+		  normalizedTree->Fill();
+		} else {
+		  double randomNum = random.Rndm();
+		  //cout << "random: " << randomNum << "\n";
+		  if (randomNum < (normalizationWeight)) {     
+		    //cout << normalizationWeight << " : " << 1 / (normalizationWeight) << " " << weight << " -> ";		    
+		    weight = weight / (normalizationWeight);
+
+		    //apply some filter cuts
+		    TTreeFormula *formula = new TTreeFormula("SkimCutString", "MR>300 && Rsq>0.15", normalizedTree);
+		    bool passSkim = false;		
+		    passSkim = formula->EvalInstance();
+		    delete formula;
+
+		    if (passSkim) {
+		      normalizedTree->Fill(); 
+		    }
+		    
+		    //cout << weight << "\n";
+		  } 
+		}
             }
 
             //save
             normalizedTree->Write();
-            inputFile.cd();
+            inputFile->cd();
         }
-        inputFile.Close();
+        inputFile->Close();
         cout << "Closing output file." << endl;
         outputFile->Close();
         delete outputFile;

@@ -1,0 +1,124 @@
+//================================================================================================
+//
+// Simple Example
+//
+//root -l RazorAnalyzer/macros/ObjectStudies/MakeElectronEfficiencyPlots.C+'("/afs/cern.ch/work/s/sixie/public/Run2SUSY/ElectronNtuple/ElectronNtuple_PromptGenLevel_TTJets_25ns.root",-1,"Electron")'
+//
+//________________________________________________________________________________________________
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include <TROOT.h>                  // access to gROOT, entry point to ROOT system
+#include <TSystem.h>                // interface to OS
+#include <TFile.h>                  // file handle class
+#include <TTree.h>                  // class to access ntuples
+#include <TClonesArray.h>           // ROOT array class
+#include <vector>                   // STL vector class
+#include <iostream>                 // standard I/O
+#include <iomanip>                  // functions to format standard I/O
+#include <fstream>                  // functions for file I/O
+#include <string>                   // C++ string class
+#include <sstream>                  // class for parsing strings
+#include <TH1D.h>                
+#include <TH2F.h>                
+#include <TCanvas.h>                
+#include <TLegend.h> 
+#include <THStack.h> 
+#include <TRandom3.h> 
+#include <TLatex.h> 
+
+#include "RazorAnalyzer/include/ControlSampleEvents.h"
+#include "RazorAnalyzer/macros/tdrstyle.C"
+#include "RazorAnalyzer/macros/CMS_lumi.C"
+
+#endif
+
+//*************************************************************************************************
+//Normalize Hist
+//*************************************************************************************************
+TH1F* NormalizeHist(TH1F *originalHist) {
+  TH1F* hist = (TH1F*)originalHist->Clone((string(originalHist->GetName())+"_normalized").c_str());
+  Double_t norm = 0;
+  hist->SetTitle("");
+  for (UInt_t b=0; int(b)<hist->GetXaxis()->GetNbins()+2; ++b) {
+    norm += hist->GetBinContent(b);
+  }
+  for (UInt_t b=0; int(b)<hist->GetXaxis()->GetNbins()+2; ++b) {
+    hist->SetBinContent(b,hist->GetBinContent(b) / norm);
+    hist->SetBinError(b,hist->GetBinError(b) / norm);
+  }
+
+  return hist;
+}
+
+
+
+void MakePileupReweight(int option = 0) {
+
+
+  TFile *pileupTargetFile = 0;
+  if (option == 0) pileupTargetFile = new TFile("/afs/cern.ch/work/c/cpena/public/CMSSW_7_6_3/src/RazorAnalyzer/data/MyDataPileupHistogram.root", "READ");
+  else if (option == 1) pileupTargetFile = new TFile("/afs/cern.ch/work/c/cpena/public/CMSSW_7_6_3/src/RazorAnalyzer/data/MyDataPileupHistogramUp.root", "READ");
+  else if (option == 2) pileupTargetFile = new TFile("/afs/cern.ch/work/c/cpena/public/CMSSW_7_6_3/src/RazorAnalyzer/data/MyDataPileupHistogramDown.root", "READ");
+  else {
+    return;
+  }
+  TH1F *pileupTargetHist = (TH1F*)pileupTargetFile->Get("pileup");
+  assert(pileupTargetHist);
+  std::cout << "pileupTargetHist " << pileupTargetHist->Integral() << std::endl;
+
+  TFile *pileupSourceFile = new TFile("/afs/cern.ch/work/c/cpena/public/CMSSW_7_6_3/src/RazorAnalyzer/data/DoubleEG_Run2015_CMSSW_7_6_March15.root", "READ");
+  //TH1F *pileupSourceHist = (TH1F*)pileupSourceFile->Get("PileupSourceHist");
+  TH1F *pileupSourceHist = (TH1F*)pileupSourceFile->Get("pileup"); 
+  assert(pileupSourceHist);
+  std::cout << "pileupSourceFile " << pileupSourceHist->Integral() << std::endl;
+  std::cout << "FILES RETRIEVED" << std::endl;
+  //*******************************************************************************************
+  //Make NVtx Reweighting Function
+  //*******************************************************************************************
+  TH1F *PileupTargetNormalized = NormalizeHist( pileupTargetHist );
+  TH1F *PileupSourceNormalized = NormalizeHist( pileupSourceHist );
+  std::cout << "HISTOS NORMALIZED" << std::endl;
+  TH1F *PileupReweight = new TH1F ("PileupReweight",";NPU;Weight",50,0,50);
+
+  for (int i=0; i<PileupReweight->GetXaxis()->GetNbins()+2; i++) {
+
+    double data = 0;
+    double bkg = 0;
+    if (PileupSourceNormalized->GetBinContent(i) > 0) {
+      PileupReweight->SetBinContent(i,PileupTargetNormalized->GetBinContent(i)/PileupSourceNormalized->GetBinContent(i));
+    } else if (PileupTargetNormalized->GetBinContent(i) == 0){
+      PileupReweight->SetBinContent(i,0.0);
+    } else {
+      if (i == 1) {
+	PileupReweight->SetBinContent(i,1);
+      } else {
+	PileupReweight->SetBinContent(i,PileupReweight->GetBinContent(i-1));
+      }
+    }
+
+    cout << "Bin " << i << " : " << PileupReweight->GetXaxis()->GetBinCenter(i) << " : " << PileupReweight->GetBinCenter(i) << " : " << PileupTargetNormalized->GetBinContent(i) << " / " << PileupSourceNormalized->GetBinContent(i) << " = " << PileupReweight->GetBinContent(i) << "\n";
+  }
+
+  
+  double k = 0;
+  for (int i=0; i<PileupSourceNormalized->GetXaxis()->GetNbins()+2; i++) {
+    double weight = PileupReweight->GetBinContent(PileupReweight->GetXaxis()->FindFixBin(i-1));
+    cout << i << " : " << i-1 << " : " << weight << " : " << PileupSourceNormalized->GetBinContent(i) << " -> " << PileupSourceNormalized->GetBinContent(i)*weight << "\n";
+    k += PileupSourceNormalized->GetBinContent(i)*weight;    
+  }
+  cout << "int = " << k << "\n";
+
+  TFile *file = TFile::Open("PileupReweight2015.root", "UPDATE");
+  file->cd();
+  if (option == 0) file->WriteTObject(PileupReweight, "PileupReweight", "WriteDelete");
+  else if (option == 1) file->WriteTObject(PileupReweight, "PileupReweightSysUp", "WriteDelete");
+  else if (option == 2) file->WriteTObject(PileupReweight, "PileupReweightSysDown", "WriteDelete");
+  file->Close();
+  delete file;
+
+}
+
+
+
+
+

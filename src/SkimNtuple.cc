@@ -1,12 +1,14 @@
 #include <fstream>
 #include <sstream>
 #include <iterator>
+#include <assert.h>
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
 #include "TTreeFormula.h"
 #include "SimpleTable.h"
 #include "TKey.h"
+#include "TDirectoryFile.h"
 
 using namespace std;
 
@@ -44,30 +46,59 @@ int main(int argc, char* argv[]) {
 
         //create output file
 	string outputfilename = Form("%s/%s_%s.root", outputDir.c_str(), 
-				     fileName.substr(fileName.find_last_of("/")+1, fileName.find_last_of(".")).c_str(),
+				     fileName.substr(fileName.find_last_of("/")+1, fileName.find_last_of(".")-fileName.find_last_of("/")-1).c_str(),
 				     outputfileLabel.c_str());
 	cout << "Output file: " << outputfilename << "\n";
         TFile *outputFile = new TFile(outputfilename.c_str(), "RECREATE");
 	
         //loop over all TTrees in the file and add the weight branch to each of them
-        TFile inputFile(fileName.c_str(), "READ");
-        inputFile.cd();
-        inputFile.Purge(); //purge unwanted TTree cycles in file
-        TIter nextkey(inputFile.GetListOfKeys());
+        TFile *inputFile = new TFile(fileName.c_str(), "READ");
+        assert(inputFile);
+        inputFile->cd();
+        TIter nextkey(inputFile->GetListOfKeys());
         TKey *key;
+        TKey *previous = NULL;
+        string dirName = "";
+
+        //if the first key is a TDirectoryFile, go inside it and skim there (temporary hack for cloning a single directory)
+        /*TKey *firstkey = (TKey*)nextkey();
+        string className = firstkey->GetClassName();
+        if(className.compare("TDirectoryFile") == 0){
+            TDirectoryFile* dir = (TDirectoryFile*)firstkey->ReadObj();
+            dirName = dir->GetName(); 
+            outputFile->mkdir(dirName.c_str());
+            cout << "Entering directory " << dirName << endl;
+            nextkey = TIter(dir->GetListOfKeys());
+        }
+        else { //reset it
+            nextkey.Reset();
+        }*/
+        //end temporary hack
+
         while((key = (TKey*)nextkey())){
             string className = key->GetClassName();
             cout << "Getting key from file.  Class type: " << className << endl;
+            //if this key is not a TTree, we skip it
             if(className.compare("TTree") != 0){
                 cout << "Skipping key (not a TTree)" << endl;
+                outputFile->cd();
+                key->Write();
+                inputFile->cd();
                 continue;
             }
+
+            //if this key has the same name as the previous one, it's an unwanted cycle and we skip it
+            if(previous != NULL && strcmp(key->GetName(), previous->GetName()) == 0)
+            {
+                continue;
+            }
+            previous = key;
 
             TTree *inputTree = (TTree*)key->ReadObj();
             cout << "Processing tree " << inputTree->GetName() << endl;
 
             //create new normalized tree
-            outputFile->cd();
+            outputFile->cd(dirName.c_str());
             TTree *outputTree = inputTree->CloneTree(0);  
             cout << "Events in the ntuple: " << inputTree->GetEntries() << endl;
 
@@ -96,9 +127,9 @@ int main(int argc, char* argv[]) {
 
             //save
             outputTree->Write();
-            inputFile.cd();
+            inputFile->cd();
         }
-        inputFile.Close();
+        inputFile->Close();
         cout << "Closing output file." << endl;
 
         outputFile->Close();
