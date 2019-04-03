@@ -1262,15 +1262,11 @@ if(nPho>=2) HT += pho2Pt;
 //******************************************************
 //compute photon efficiency scale factor
 //******************************************************
-if(nPho == 1) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
-else
-{
-	if(pho1isStandardPhoton and pho2isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper_GED->getPhotonScaleFactor(pho2Pt, pho2Eta);
-	if(!pho1isStandardPhoton and pho2isStandardPhoton) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper_GED->getPhotonScaleFactor(pho2Pt, pho2Eta);
-	if(pho1isStandardPhoton and !pho2isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);
-	if(!pho1isStandardPhoton and !pho2isStandardPhoton) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);
-	//photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);	
-}
+
+
+if(pho1isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
+else photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
+
 //******************************************************
 //compute trigger efficiency weights for MC
 //******************************************************
@@ -1756,20 +1752,20 @@ mll = (lep1+lep2).M();
 	pho2passHoverEMedium = pho2isStandardPhoton ? ((abs(pho2Eta)<1.4442) ? (pho2HoverE < 0.02197) : (pho2HoverE < 0.0326)) : true;
 	pho2passHoverETight = pho2isStandardPhoton ? ((abs(pho2Eta)<1.4442) ? (pho2HoverE < 0.02148) : (pho2HoverE < 0.0321)) : true;
 
-	pho1passSigmaIetaIetaLoose = pho1SigmaIetaIeta < 0.015 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
-	pho1passSigmaIetaIetaMedium = pho1SigmaIetaIeta < 0.011 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
-	pho1passSigmaIetaIetaTight = pho1SigmaIetaIeta < 0.0099 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);		
-	pho2passSigmaIetaIetaLoose = pho2SigmaIetaIeta < 0.012 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
-	pho2passSigmaIetaIetaMedium = pho2SigmaIetaIeta < 0.011 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
-	pho2passSigmaIetaIetaTight = pho2SigmaIetaIeta < 0.0099 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);		
-	pho1passSmajorLoose  = pho1Smajor < 0.80 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
-	pho1passSmajorMedium  = pho1Smajor < 0.50 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
-	pho1passSmajorMedium  = pho1Smajor < 0.40 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+	pho1passSigmaIetaIetaLoose = pho1SigmaIetaIeta < 0.022;
+	pho1passSigmaIetaIetaMedium = pho1SigmaIetaIeta < 0.019;
+	pho1passSigmaIetaIetaTight = pho1SigmaIetaIeta < 0.017;
+	pho2passSigmaIetaIetaLoose = pho2SigmaIetaIeta < 0.022;
+	pho2passSigmaIetaIetaMedium = pho2SigmaIetaIeta < 0.019;
+	pho2passSigmaIetaIetaTight = pho2SigmaIetaIeta < 0.017;
 
-	pho2passSmajorLoose  = pho2Smajor < 0.80 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
-	pho2passSmajorMedium  = pho2Smajor < 0.50 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
-	pho2passSmajorMedium  = pho2Smajor < 0.40 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+	pho1passSmajorLoose  =  pho1isStandardPhoton ?  true : (pho1Smajor < 1.7);
+	pho1passSmajorMedium  =  pho1isStandardPhoton ?  true : (pho1Smajor < 1.5);
+	pho1passSmajorTight  =  pho1isStandardPhoton ?  true : (pho1Smajor < 1.3);
 
+	pho2passSmajorLoose  =  pho2isStandardPhoton ?  true : (pho2Smajor < 1.7);
+	pho2passSmajorMedium  =  pho2isStandardPhoton ?  true : (pho2Smajor < 1.5);
+	pho2passSmajorTight  =  pho2isStandardPhoton ?  true : (pho2Smajor < 1.3);
 
 	outputTree->Fill();		
 

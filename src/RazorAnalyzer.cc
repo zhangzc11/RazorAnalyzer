@@ -2633,28 +2633,31 @@ bool RazorAnalyzer::photonPassTightIso(int i, bool use25nsCuts, bool usePrivateP
 
 bool RazorAnalyzer::photonPassTightIso_OOT2016(int i){
 	
-	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 3.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	//bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 3.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 3.0 + 0.007132*phoPt[i] + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	//bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 5.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
 	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 5.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
-	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 2.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	//bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 2.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 2.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) +  0.1969*fixedGridRhoFastjetAll*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
 	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
 }
 
 bool RazorAnalyzer::photonPassMediumIso_OOT2016(int i){
 	
-	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 5.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
-	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 8.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
-	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 5.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 5.0 + 0.007132*phoPt[i] + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 7.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 4.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) +  0.1969*fixedGridRhoFastjetAll*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
 	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
 }
+
 
 bool RazorAnalyzer::photonPassLooseIso_OOT2016(int i){
 	
-	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 8.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
-	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 11.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
-	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 8.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 7.0 + 0.007132*phoPt[i] + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 9.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 6.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) +  0.1969*fixedGridRhoFastjetAll*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
 	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
 }
-
 
 
 bool RazorAnalyzer::isLoosePhoton(int i, bool use25nsCuts){
