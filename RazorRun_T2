@@ -12,7 +12,7 @@ else
     tar vxzf ScaleFactors_07Aug2017Rereco_2016data.tgz
     tar vxzf JEC_Summer16_23Sep2016V3.tgz
     tar vxzf Spring16_FastSimV1.tgz
-    tar vxzf Summer16_07Aug2017_V6_V12_DATA_MC.tgz
+    tar vxzf Summer16_07Aug2017_V6_V20_DATA_MC.tgz
 
     ./Run$2 $1 ${@:3}
     rm Run$2

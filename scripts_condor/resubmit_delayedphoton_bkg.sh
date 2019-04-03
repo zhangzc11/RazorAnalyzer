@@ -8,7 +8,7 @@ RazorAnalyzerDir=`pwd`
 cd -
 
 job_script=${RazorAnalyzerDir}/scripts_condor/runRazorJob_CaltechT2.sh
-filesPerJob=25
+filesPerJob=2
 
 for sample in \
 QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
@@ -22,7 +22,9 @@ GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
 GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
 GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
 GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 
+GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+DiPhotonJetsBox_M40_80-Sherpa \
+DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
 
 
 do

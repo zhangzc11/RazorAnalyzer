@@ -8,28 +8,32 @@ RazorAnalyzerDir=`pwd`
 cd -
 
 job_script=${RazorAnalyzerDir}/scripts_condor/runRazorJob_CaltechT2.sh
-filesPerJob=2
+filesPerJob=1
 
 for sample in \
-QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+DiPhotonJetsBox_M40_80-Sherpa \
+DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa \
+TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8 \
+TGGJets_leptonDecays_13TeV_MadGraph_madspin_pythia8 \
+TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8 \
+ZGGJets_ZToHadOrNu_5f_LO_madgraph_pythia8 \
+WZG_TuneCUETP8M1_13TeV-amcatnlo-pythia8 \
+WGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8 \
+WWG_TuneCUETP8M1_13TeV-amcatnlo-pythia8  \
+TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8 \
+WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8  \
+WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8  \
+WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
+WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 
 
-#DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
 
 do
 	echo "Sample " ${sample}
-	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/MC_Summer16_reMINIAOD/${sample}.cern.txt
+	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/MC_Summer16_MINIAODv2/${sample}.caltech.txt
 	nfiles=`cat ${CMSSW_BASE}$inputfilelist | wc | awk '{print $1}' `
 	maxjob=`python -c "print int($nfiles.0/$filesPerJob)-1"`
 	analyzer=DelayedPhotonAnalyzer

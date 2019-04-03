@@ -115,15 +115,15 @@ class RazorAnalyzer: public RazorEvents {
 	bool photonPassLooseIDWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool photonPassMediumIDWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool photonPassTightIDWithoutEleVeto(int i, bool use25nsCuts = true);
-	bool photonPassLooseDelayedIDWithoutEleVeto(int i, bool use25nsCuts = true);
-	bool photonPassMediumDelayedIDWithoutEleVeto(int i, bool use25nsCuts = true);
-	bool photonPassTightDelayedIDWithoutEleVeto(int i, bool use25nsCuts = true);
 	bool photonPassLooseID(int i, bool use25nsCuts = true);
 	bool photonPassMediumID(int i, bool use25nsCuts = true);
 	bool photonPassTightID(int i, bool use25nsCuts = true);
 	bool photonPassLooseIso(int i, bool use25nsCuts = true, bool usePrivatePF = false, bool usePFClusterIso = false);
 	bool photonPassMediumIso(int i, bool use25nsCuts = true, bool usePrivatePF = false, bool usePFClusterIso = false);
 	bool photonPassTightIso(int i, bool use25nsCuts = true, bool usePrivatePF = false, bool usePFClusterIso = false);
+	bool photonPassTightIso_OOT2016(int i);
+	bool photonPassMediumIso_OOT2016(int i);
+	bool photonPassLooseIso_OOT2016(int i);
         bool isLoosePhoton(int i, bool use25nsCuts = true);
         bool isMediumPhoton(int i, bool use25nsCuts = true);
         bool isTightPhoton(int i, bool use25nsCuts = true);
@@ -133,6 +133,9 @@ class RazorAnalyzer: public RazorEvents {
         bool isLooseDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts = true);
         bool isMediumDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts = true);
         bool isTightDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts = true);
+        bool isLooseDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts = true);
+        bool isMediumDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts = true);
+        bool isTightDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts = true);
 	bool matchPhotonHLTFilters( int i, string HLTFilter);
 	void getPhotonEffAreaExo15004( float eta, double& effAreaPho );
 	bool photonPassLooseIDWithoutEleVetoExo15004(int i);

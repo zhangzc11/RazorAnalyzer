@@ -8,24 +8,11 @@ RazorAnalyzerDir=`pwd`
 cd -
 
 job_script=${RazorAnalyzerDir}/scripts_condor/runRazorJob_CaltechT2.sh
-filesPerJob=2
+filesPerJob=1
 
 for sample in \
-QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-40To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 \
-DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
-
-#DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8
+GMSB_L150TeV_Ctau1200cm_13TeV-pythia8 \
+GMSB_L250TeV_Ctau0_1cm_13TeV-pythia8 
 
 do
 	echo "Sample " ${sample}
@@ -33,6 +20,7 @@ do
 	nfiles=`cat ${CMSSW_BASE}$inputfilelist | wc | awk '{print $1}' `
 	maxjob=`python -c "print int($nfiles.0/$filesPerJob)-1"`
 	analyzer=DelayedPhotonAnalyzer
+
 	rm submit/${analyzer}_${sample}_Job*.jdl
 	rm log/${analyzer}_${sample}_Job*
 

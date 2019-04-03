@@ -29,7 +29,10 @@ RazorHelper::RazorHelper(std::string tag_, bool isData_, bool isFastsim_):
     
     // tag for 2016 17Aug2017 Rereco
     else if (tag == "Razor2016_07Aug2017Rereco"){
-        loadTag_Razor2016_07Aug2017Rereco();
+        loadTag_Razor2016_07Aug2017Rereco_DelayedPhoton();
+    }
+    else if (tag == "Razor2016_07Aug2017Rereco_GEDPhoton"){
+        loadTag_Razor2016_07Aug2017Rereco_GEDPhoton();
     }
 
     // tag for 2016 80X Moriond Rereco
@@ -587,7 +590,17 @@ void RazorHelper::loadJECs_Razor2015_76X() {
 ////  2016 17Aug2017 Rereco
 //////////////////////////////////////////////////
 
-void RazorHelper::loadTag_Razor2016_07Aug2017Rereco() {
+void RazorHelper::loadTag_Razor2016_07Aug2017Rereco_GEDPhoton() {
+    loadPileup_Razor2016_MoriondRereco();
+    loadLepton_Razor2016_MoriondRereco();
+    loadPhoton_Razor2016_MoriondRereco();
+    loadBTag_Razor2016_MoriondRereco();
+    loadTrigger_Razor2016_07Aug2017Rereco_DelayedPhoton();
+    loadJECs_Razor2016_07Aug2017Rereco();
+    loadAK8JetTag_Razor2016_MoriondRereco();
+}
+
+void RazorHelper::loadTag_Razor2016_07Aug2017Rereco_DelayedPhoton() {
     loadPileup_Razor2016_MoriondRereco();
     loadLepton_Razor2016_MoriondRereco();
     loadPhoton_Razor2016_07Aug2017Rereco_DelayedPhoton();
@@ -598,8 +611,9 @@ void RazorHelper::loadTag_Razor2016_07Aug2017Rereco() {
 }
 
 
+
 void RazorHelper::loadJECs_Razor2016_07Aug2017Rereco() {
-    std::cout << "RazorHelper: loading jet energy correction constants, using Summer16_07Aug2017_V12." << std::endl;
+    std::cout << "RazorHelper: loading jet energy correction constants, using Summer16_07Aug2017_V20." << std::endl;
     // initialize
     std::string jecPathname = "./";
     correctionParameters = std::vector<std::vector<JetCorrectorParameters> >();
@@ -613,16 +627,16 @@ void RazorHelper::loadJECs_Razor2016_07Aug2017Rereco() {
       //IOV: 2016BCD
       std::vector<JetCorrectorParameters> correctionParametersBCD = std::vector<JetCorrectorParameters> ();
       correctionParametersBCD.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017BCD_V12_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017BCD_V20_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersBCD.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017BCD_V12_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017BCD_V20_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersBCD.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017BCD_V12_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017BCD_V20_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersBCD.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017BCD_V12_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017BCD_V20_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
       JetCorrectorParameters *JetResolutionParametersBCD = new JetCorrectorParameters(Form("%s/JetResolutionInputAK5PF.txt",jecPathname.c_str()));
       FactorizedJetCorrector *JetCorrectorBCD = new FactorizedJetCorrector(correctionParametersBCD);
-      std::string jecUncPathBCD = jecPathname+"/Summer16_07Aug2017BCD_V12_DATA_Uncertainty_AK4PFchs.txt";
+      std::string jecUncPathBCD = jecPathname+"/Summer16_07Aug2017BCD_V20_DATA_Uncertainty_AK4PFchs.txt";
       JetCorrectionUncertainty *jecUncBCD = new JetCorrectionUncertainty(jecUncPathBCD);
       SimpleJetResolution* JetResolutionCalculatorBCD = new SimpleJetResolution(*JetResolutionParametersBCD);
 
@@ -636,16 +650,16 @@ void RazorHelper::loadJECs_Razor2016_07Aug2017Rereco() {
       //IOV: 2016EF
       std::vector<JetCorrectorParameters> correctionParametersEF = std::vector<JetCorrectorParameters> ();
       correctionParametersEF.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017EF_V12_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017EF_V20_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersEF.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017EF_V12_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017EF_V20_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersEF.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017EF_V12_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017EF_V20_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersEF.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017EF_V12_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017EF_V20_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
       JetCorrectorParameters *JetResolutionParametersEF = new JetCorrectorParameters(Form("%s/JetResolutionInputAK5PF.txt",jecPathname.c_str()));
       FactorizedJetCorrector *JetCorrectorEF = new FactorizedJetCorrector(correctionParametersEF);
-      std::string jecUncPathEF = jecPathname+"/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017EF_V12_DATA_Uncertainty_AK4PFchs.txt";
+      std::string jecUncPathEF = jecPathname+"/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017EF_V20_DATA_Uncertainty_AK4PFchs.txt";
       JetCorrectionUncertainty *jecUncEF = new JetCorrectionUncertainty(jecUncPathEF);
       SimpleJetResolution* JetResolutionCalculatorEF = new SimpleJetResolution(*JetResolutionParametersEF);
 
@@ -659,16 +673,16 @@ void RazorHelper::loadJECs_Razor2016_07Aug2017Rereco() {
       //IOV: 2016GH
       std::vector<JetCorrectorParameters> correctionParametersGH = std::vector<JetCorrectorParameters> ();
       correctionParametersGH.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017GH_V12_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017GH_V20_DATA_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersGH.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017GH_V12_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017GH_V20_DATA_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersGH.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017GH_V12_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017GH_V20_DATA_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersGH.push_back(JetCorrectorParameters(
-                  Form("%s/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017GH_V12_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017GH_V20_DATA_L2L3Residual_AK4PFchs.txt", jecPathname.c_str())));
       JetCorrectorParameters *JetResolutionParametersGH = new JetCorrectorParameters(Form("%s/JetResolutionInputAK5PF.txt",jecPathname.c_str()));
       FactorizedJetCorrector *JetCorrectorGH = new FactorizedJetCorrector(correctionParametersGH);
-      std::string jecUncPathGH = jecPathname+"/Summer16_07Aug2017V12_DATA/Summer16_07Aug2017GH_V12_DATA_Uncertainty_AK4PFchs.txt";
+      std::string jecUncPathGH = jecPathname+"/Summer16_07Aug2017V20_DATA/Summer16_07Aug2017GH_V20_DATA_Uncertainty_AK4PFchs.txt";
       JetCorrectionUncertainty *jecUncGH = new JetCorrectionUncertainty(jecUncPathGH);
       SimpleJetResolution* JetResolutionCalculatorGH = new SimpleJetResolution(*JetResolutionParametersGH);
 
@@ -847,6 +861,9 @@ void RazorHelper::loadPhoton_Razor2016_MoriondRereco(){
     std::cout << "RazorHelper: loading photon efficiency scale factor histograms" << std::endl;
     phoEffSFFile = TFile::Open("efficiency_results_PhoLooseEffDenominatorReco_2016_Rereco.root");
     phoLooseEffSFHist = (TH2D*)phoEffSFFile->Get("ScaleFactor_PhoLooseEffDenominatorReco");
+
+    phoTightEffSFFile = TFile::Open("efficiency_results_PhoTightEffDenominatorReco_2016_Rereco.root");
+    phoTightEffSFHist = (TH2D*)phoEffSFFile->Get("ScaleFactor_PhoTightEffDenominatorReco");
 
     phoEffFastsimSFFile = TFile::Open("PhotonEffFastsimToFullsimCorrectionFactors.2016.root");
     phoLooseEffFastsimSFHist = (TH2D*)phoEffFastsimSFFile->Get("ElectronLoose_FastsimScaleFactor");
@@ -2086,7 +2103,7 @@ void RazorHelper::loadBTag_Razor2017_17Nov2017Rereco() {
     btagreaderMistag_do = new BTagCalibrationReader(btagcalib, BTagEntry::OP_MEDIUM, "incl", "down");  // sys down
 
     // Fastsim
-    btagcalibfastsim = new BTagCalibration("csvv2", "./csvv2_13TEV_17_6_3_2019.csv");
+    btagcalibfastsim = new BTagCalibration("csvv2", "./fastsim_csvv2_ttbar_26_1_2017.csv");
     btagreaderfastsim = new BTagCalibrationReader(btagcalibfastsim, BTagEntry::OP_MEDIUM, "fastsim", "central");
     btagreaderfastsim_up = new BTagCalibrationReader(btagcalibfastsim, BTagEntry::OP_MEDIUM, "fastsim", "up");
     btagreaderfastsim_do = new BTagCalibrationReader(btagcalibfastsim, BTagEntry::OP_MEDIUM, "fastsim", "down");
@@ -2310,7 +2327,7 @@ void RazorHelper::loadLepton_Razor2017_31Mar2018Rereco(){
     //vetoEleEffSFFile = TFile::Open("efficiency_results_VetoElectronSelectionEffDenominatorGen_2017_31Mar2018_Golden.root");
     eleGSFTrackEffSFFile = TFile::Open("ElectronRecoEffScaleFactors_Run2017.root");
     eleTightEffFastsimSFFile = TFile::Open("ElectronEffFastsimToFullsimCorrectionFactors.2016.root");
-    eleLooseEffFastsimSFFile = TFile::Open("detailed_ele_full_fast_sf_17.root");
+    eleLooseEffFastsimSFFile = TFile::Open("ElectronEffFastsimToFullsimCorrectionFactors.2016.root");
     eleVetoEffFastsimSFFile = TFile::Open("ElectronEffFastsimToFullsimCorrectionFactors.2016.root");
 
     // eleTightEfficiencyHist = (TH2D*)eleTightEfficiencyFile->Get("ElectronEff_Tight_Fullsim");
@@ -2326,7 +2343,7 @@ void RazorHelper::loadLepton_Razor2017_31Mar2018Rereco(){
     eleGSFTrackEffSFHist = (TH2D*)eleGSFTrackEffSFFile->Get("h2_scaleFactorsEGamma");
     eleTightEffFastsimSFHist =  (TH2D*)eleTightEffFastsimSFFile->Get("ElectronTight_FastsimScaleFactor");
     //for now 20190124
-    eleLooseEffFastsimSFHist =  (TH2D*)eleLooseEffFastsimSFFile->Get("CutBasedLooseNoIso94XV2_sf");
+    eleLooseEffFastsimSFHist =  (TH2D*)eleLooseEffFastsimSFFile->Get("ElectronTight_FastsimScaleFactor");
     //eleLooseEffFastsimSFHist =  (TH2D*)eleLooseEffFastsimSFFile->Get("ElectronLoose_FastsimScaleFactor");
     eleVetoEffFastsimSFHist = (TH2D*)eleVetoEffFastsimSFFile->Get("ElectronEff_Veto_Fullsim");
 
@@ -2477,14 +2494,14 @@ void RazorHelper::loadJECs_Razor2017_31Mar2018Rereco() {
 
       std::vector<JetCorrectorParameters> correctionParametersFastsim = std::vector<JetCorrectorParameters> ();
       correctionParametersFastsim.push_back(JetCorrectorParameters(
-                  Form("%s/Fall17_FastsimV1_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Spring16_FastSimV1_MC_L1FastJet_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersFastsim.push_back(JetCorrectorParameters(
-                  Form("%s/Fall17_FastsimV1_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Spring16_FastSimV1_MC_L2Relative_AK4PFchs.txt", jecPathname.c_str())));
       correctionParametersFastsim.push_back(JetCorrectorParameters(
-                  Form("%s/Fall17_FastsimV1_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
+                  Form("%s/Spring16_FastSimV1_MC_L3Absolute_AK4PFchs.txt", jecPathname.c_str())));
       JetCorrectorParameters *JetResolutionParametersFastsim = new JetCorrectorParameters(Form("%s/JetResolutionInputAK5PF.txt",jecPathname.c_str()));
       FactorizedJetCorrector *JetCorrectorFastsim = new FactorizedJetCorrector(correctionParametersFastsim);
-      std::string jecUncPath = jecPathname+"/Fall17_FastsimV1_Uncertainty_AK4PFchs.txt";
+      std::string jecUncPath = jecPathname+"/Spring16_FastSimV1_MC_Uncertainty_AK4PFchs.txt";
       JetCorrectionUncertainty *jecUncFastsim = new JetCorrectionUncertainty(jecUncPath);
       SimpleJetResolution* JetResolutionCalculatorFastsim = new SimpleJetResolution(*JetResolutionParametersFastsim);
 

@@ -218,6 +218,7 @@ void RazorAnalyzer::EnableIsoPFCandidates(){
 
 void RazorAnalyzer::EnablePhotons(){
     fChain->SetBranchStatus("nPhotons", 1);
+    fChain->SetBranchStatus("nPhotons_overlap", 1);
     fChain->SetBranchStatus("phoE", 1);
     fChain->SetBranchStatus("phoPt", 1);
     fChain->SetBranchStatus("phoEta", 1);
@@ -225,6 +226,8 @@ void RazorAnalyzer::EnablePhotons(){
     fChain->SetBranchStatus("phoSigmaIetaIeta", 1);
     fChain->SetBranchStatus("phoFull5x5SigmaIetaIeta", 1);
     fChain->SetBranchStatus("phoR9", 1);
+    fChain->SetBranchStatus("pho_sminor", 1);
+    fChain->SetBranchStatus("pho_smajor", 1);
     fChain->SetBranchStatus("pho_HoverE", 1);
     fChain->SetBranchStatus("pho_sumChargedHadronPt", 1);
     fChain->SetBranchStatus("pho_sumNeutralHadronEt", 1);
@@ -331,7 +334,9 @@ void RazorAnalyzer::EnableMet(){
     fChain->SetBranchStatus("metType0Pt", 1);
     fChain->SetBranchStatus("metType0Phi", 1);
     fChain->SetBranchStatus("metType1Pt", 1);
+    fChain->SetBranchStatus("metType1Pt_raw", 1);
     fChain->SetBranchStatus("metType1Phi", 1);
+    fChain->SetBranchStatus("metType1Phi_raw", 1);
     fChain->SetBranchStatus("metEGCleanPt", 1);
     fChain->SetBranchStatus("metEGCleanPhi", 1);
     fChain->SetBranchStatus("metMuEGCleanPt", 1);
@@ -2419,14 +2424,14 @@ void RazorAnalyzer::getPhotonEffArea90( float eta, double& effAreaChHad, double&
 void RazorAnalyzer::getPhotonEffAreaPFClusterIso( float eta, double& effAreaChHad, double& effAreaNHad, double& effAreaPho )
 {
       if(fabs (eta) < 0.8 ) {
-		effAreaChHad = 0.037;
-		effAreaNHad = 0.089;
-		effAreaPho = 0.19;
+		effAreaChHad = 0.047;
+		effAreaNHad = 0.0330;
+		effAreaPho = 0.103;
 	}
       else {
-		effAreaChHad = 0.031;
-                effAreaNHad = 0.15;
-                effAreaPho = 0.19;		
+		effAreaChHad = 0.105;
+                effAreaNHad = 0.0340;
+                effAreaPho = 0.0990;		
 	}
  };
 
@@ -2543,74 +2548,6 @@ bool RazorAnalyzer::photonPassTightIDWithoutEleVeto(int i, bool use25nsCuts){
 }
 
 
-// 80X values from EGamma Presentation
-// https://indico.cern.ch/event/491517/contributions/2349134/attachments/1359450/2056689/CutBasedPhotonID_24-10-2016.pdf
-bool RazorAnalyzer::photonPassLooseDelayedIDWithoutEleVeto(int i, bool use25nsCuts ){
-
-  bool pass = true;
-
-  if (use25nsCuts) {
-    if(fabs(pho_superClusterEta[i]) < 1.479){    
-      if(phoFull5x5SigmaIetaIeta[i] > 0.01031) pass = false;   
-    } else { 
-      if(phoFull5x5SigmaIetaIeta[i] > 0.03013) pass = false;    
-    }
-  }  else {
-    cout << "Warning: you are not using 25nsCuts. return false.\n";
-    pass = false;
-  }
-
-  double phoSminor = getPhotonSminorSmajor(i, true);
-  if(phoSminor < 0.15 || phoSminor > 0.7) pass = false;
-  
-  return pass;
-}
-
-// 80X values from EGamma Presentation
-// https://indico.cern.ch/event/491517/contributions/2349134/attachments/1359450/2056689/CutBasedPhotonID_24-10-2016.pdf
-bool RazorAnalyzer::photonPassMediumDelayedIDWithoutEleVeto(int i, bool use25nsCuts){
-  bool pass = true;
-
-  if (use25nsCuts) {
-    if(fabs(pho_superClusterEta[i]) < 1.479){    
-      if(phoFull5x5SigmaIetaIeta[i] > 0.01022) pass = false;   
-    } else { 
-      if(phoFull5x5SigmaIetaIeta[i] > 0.03001) pass = false;    
-    }
-  } else {
-    cout << "Warning: you are not using 25nsCuts. return false.\n";
-    pass = false;
-  }
-
-  double phoSminor = getPhotonSminorSmajor(i, true);
-  if(phoSminor < 0.15 || phoSminor > 0.5) pass = false;
-  
-  return pass;
-}
-
-// 80X values from EGamma Presentation
-// https://indico.cern.ch/event/491517/contributions/2349134/attachments/1359450/2056689/CutBasedPhotonID_24-10-2016.pdf
-bool RazorAnalyzer::photonPassTightDelayedIDWithoutEleVeto(int i, bool use25nsCuts){
-  bool pass = true;
-
-  if (use25nsCuts) {
-    if(fabs(pho_superClusterEta[i]) < 1.479){    
-      if(phoFull5x5SigmaIetaIeta[i] > 0.00994) pass = false;   
-    } else { 
-      if(phoFull5x5SigmaIetaIeta[i] > 0.03000) pass = false;    
-    }
-  } else {
-    cout << "Warning: you are not using 25nsCuts. return false.\n";
-    pass = false;
-  }
-
-  double phoSminor = getPhotonSminorSmajor(i, true);
-  if(phoSminor < 0.15 || phoSminor > 0.3) pass = false;
-
-  return pass;
-}
-
-
 bool RazorAnalyzer::photonPassLooseID(int i, bool use25nsCuts){
 
   bool pass = true;
@@ -2646,7 +2583,7 @@ bool RazorAnalyzer::photonPassLooseIso(int i, bool use25nsCuts, bool usePrivateP
   if (use25nsCuts) {
     if(fabs(pho_superClusterEta[i]) < 1.479){
       if(!usePFClusterIso) return photonPassesIsolation(i, 1.295, 10.910 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 3.630 + 0.0047*phoPt[i], true, usePrivatePF, usePFClusterIso );
-      else return photonPassesIsolation(i, 8.5 + 0.00091*phoPt[i], 10.910 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 8.0+0.00092*phoPt[i], true, usePrivatePF, usePFClusterIso );
+      else return photonPassesIsolation(i, 8.5 + 0.001158*phoPt[i], 10.910 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 8.0+0.001508*phoPt[i], true, usePrivatePF, usePFClusterIso );
     } else {
       return photonPassesIsolation(i, 1.011, 5.931 + 0.0163*phoPt[i] + 0.000014*phoPt[i]*phoPt[i], 6.641 + 0.0034*phoPt[i], true, usePrivatePF, usePFClusterIso);
     }
@@ -2682,7 +2619,7 @@ bool RazorAnalyzer::photonPassTightIso(int i, bool use25nsCuts, bool usePrivateP
   if (use25nsCuts) {
     if(fabs(pho_superClusterEta[i]) < 1.479){
       if(!usePFClusterIso)  return photonPassesIsolation(i, 0.202, 0.264 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 2.362 + 0.0047*phoPt[i], true, usePrivatePF);
-      else return photonPassesIsolation(i, 5.5 + 0.00094*phoPt[i], 0.264 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 5.0+0.00092*phoPt[i], true, usePrivatePF, true );
+      else return photonPassesIsolation(i, 5.5 + 0.001158*phoPt[i], 0.264 + 0.0148*phoPt[i] + 0.000017*phoPt[i]*phoPt[i], 5.0+0.001508*phoPt[i], true, usePrivatePF, true );
     } else {
       return photonPassesIsolation(i, 0.034, 0.586 + 0.0163*phoPt[i] + 0.000014*phoPt[i]*phoPt[i], 2.617 + 0.0034*phoPt[i], true, usePrivatePF);
     }
@@ -2692,6 +2629,32 @@ bool RazorAnalyzer::photonPassTightIso(int i, bool use25nsCuts, bool usePrivateP
   }
 
 }
+
+
+bool RazorAnalyzer::photonPassTightIso_OOT2016(int i){
+	
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 3.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 5.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 2.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
+}
+
+bool RazorAnalyzer::photonPassMediumIso_OOT2016(int i){
+	
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 5.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 8.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 5.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
+}
+
+bool RazorAnalyzer::photonPassLooseIso_OOT2016(int i){
+	
+	bool phopassIso_ecal = pho_ecalPFClusterIso[i]  < 8.0 + 0.007132*phoPt[i]*(std::copysign(0.5, phoPt[i]-150.0)+0.5) + 0.155*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.1362*fixedGridRhoFastjetAll-0.92)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_hcal = pho_sumNeutralHadronEt[i]  < 11.0 - 0.0008001*phoPt[i] + 2.934e-05*phoPt[i]*phoPt[i] + 0.04884*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5) + (0.05228*fixedGridRhoFastjetAll-2.2)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5);
+	bool phopassIso_tracker = pho_trkSumPtHollowConeDR03[i] < 8.0 + 0.005996*phoPt[i] + 0.2304*fixedGridRhoFastjetAll*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, 20.0-fixedGridRhoFastjetAll) + 0.5) + (0.3723*(fixedGridRhoFastjetAll-20.0)+4.6080)*(std::copysign(0.5, 0.8-abs(phoEta[i]))+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-20.0) + 0.5 ) + (0.1969*fixedGridRhoFastjetAll-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, 14.0-fixedGridRhoFastjetAll) + 0.5) + (0.5029*(fixedGridRhoFastjetAll-14.0)+2.7566-0.4)*(std::copysign(0.5, abs(phoEta[i])-0.8)+0.5)*(std::copysign(0.5, fixedGridRhoFastjetAll-14.0) + 0.5);
+	return phopassIso_ecal && phopassIso_hcal && phopassIso_tracker;
+}
+
 
 
 bool RazorAnalyzer::isLoosePhoton(int i, bool use25nsCuts){
@@ -2753,8 +2716,13 @@ bool RazorAnalyzer::isLooseDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts){
 
   bool pass = true;
 
-  if (!photonPassLooseDelayedIDWithoutEleVeto(i,use25nsCuts)) pass = false;
-  if(!photonPassLooseIso(i,use25nsCuts,false,true)) pass = false;
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSmajor = pho_smajor[i] < 1.80; // - 0.2816*abs(phoEta[i]) + 0.3865*phoEta[i]*phoEta[i] + 1.179*exp(-0.009499*phoPt[i]) - 0.193*seedtime*(std::copysign(0.5, 0.0 - seedtime)+0.5) + 0.2268*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5)+(0.02828*(seedtime-3.5) + 0.7938)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.021;//0.01031 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  pass = passSmajor && passSigmaIetaIeta;
+
+  if(!photonPassLooseIso_OOT2016(i)) pass = false;
 
   return pass;
 }
@@ -2762,8 +2730,14 @@ bool RazorAnalyzer::isLooseDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts){
 bool RazorAnalyzer::isMediumDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts){
   bool pass = true;
 
-  if (!photonPassMediumDelayedIDWithoutEleVeto(i,use25nsCuts)) pass = false;
-  if(!photonPassMediumIso(i,use25nsCuts,false,true)) pass = false;
+
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSmajor = pho_smajor[i] < 1.50; // - 0.2816*abs(phoEta[i]) + 0.3865*phoEta[i]*phoEta[i] + 1.179*exp(-0.009499*phoPt[i]) - 0.193*seedtime*(std::copysign(0.5, 0.0 - seedtime)+0.5) + 0.2268*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5)+(0.02828*(seedtime-3.5) + 0.7938)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.019;//0.01022 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  pass = passSmajor && passSigmaIetaIeta;
+
+  if(!photonPassMediumIso_OOT2016(i)) pass = false;
 
   return pass;
 }
@@ -2771,8 +2745,55 @@ bool RazorAnalyzer::isMediumDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts)
 bool RazorAnalyzer::isTightDelayedPhotonWithoutEleVeto(int i, bool use25nsCuts){
   bool pass = true;
 
-  if (!photonPassTightDelayedIDWithoutEleVeto(i,use25nsCuts)) pass = false;
-  if(!photonPassTightIso(i,use25nsCuts,false,true)) pass = false;
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSmajor = pho_smajor[i] < 1.30; // - 0.2816*abs(phoEta[i]) + 0.3865*phoEta[i]*phoEta[i] + 1.179*exp(-0.009499*phoPt[i]) - 0.193*seedtime*(std::copysign(0.5, 0.0 - seedtime)+0.5) + 0.2268*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5)+(0.02828*(seedtime-3.5) + 0.7938)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.017;//0.0099 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  pass = passSmajor && passSigmaIetaIeta;
+  
+  if(!photonPassTightIso_OOT2016(i)) pass = false;
+
+  return pass;
+}
+
+
+bool RazorAnalyzer::isLooseDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts){
+  bool pass = true;
+
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.021;//0.01031 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  if(!passSigmaIetaIeta) pass = false;
+  if(!photonPassLooseIso(i,use25nsCuts)) pass = false;
+  if(pho_HoverE[i] > 0.0597) pass = false;
+
+  return pass;
+}
+
+
+bool RazorAnalyzer::isMediumDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts){
+  bool pass = true;
+
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.019;//0.01022 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  if(!passSigmaIetaIeta) pass = false;
+  if(!photonPassMediumIso(i,use25nsCuts)) pass = false;
+  if(pho_HoverE[i] > 0.0396) pass = false;
+
+  return pass;
+}
+
+
+bool RazorAnalyzer::isTightDelayedPhotonWithoutEleVetoGED(int i, bool use25nsCuts){
+  bool pass = true;
+
+  uint seedhitIndex =  (*pho_SeedRechitIndex)[i];
+  double seedtime = (*ecalRechit_T)[seedhitIndex];
+  bool passSigmaIetaIeta = phoFull5x5SigmaIetaIeta[i] < 0.017;//0.00994 + 0.001549*seedtime*(std::copysign(0.5, seedtime)+0.5)*(std::copysign(0.5, 3.5-seedtime)+0.5) + (0.0004942*(seedtime-3.5) + 0.005422)*(std::copysign(0.5, seedtime-3.5)+0.5);
+  if(!passSigmaIetaIeta) pass = false;
+  if(!photonPassTightIso(i,use25nsCuts)) pass = false;
+  if(pho_HoverE[i] > 0.0269) pass = false;
 
   return pass;
 }

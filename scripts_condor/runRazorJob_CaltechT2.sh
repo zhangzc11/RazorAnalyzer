@@ -4,6 +4,11 @@ hostname
 echo "Job started"
 date
 
+voms-proxy-info -all
+x509loc=${X509_USER_PROXY}
+
+echo "x509 loc: ${x509loc}"
+
 code_dir_suffix=$1
 outputDirectory=$2
 analysisType=$3
@@ -92,7 +97,9 @@ then
 
 		##job finished, copy file to T2
 		echo "copying output file to /mnt/hadoop/${outputDirectory}"
-		cp ${outputfile} /mnt/hadoop/${outputDirectory}
+		#cp ${outputfile} /mnt/hadoop/${outputDirectory}
+		echo "gfal-copy -f --checksum-mode=both ${outputfile} gsiftp://transfer.ultralight.org/${outputDirectory}/${outputfile}"
+		env -i X509_USER_PROXY=${x509loc} gfal-copy --checksum-mode=both ${outputfile} gsiftp://transfer.ultralight.org/${outputDirectory}/${outputfile}
 		if [ -f /mnt/hadoop/${outputDirectory}/${outputfile} ]
 		then
 			echo "ZZZZAAAA ============ good news, job finished successfully "

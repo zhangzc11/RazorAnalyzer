@@ -25,10 +25,13 @@ const bool photonOrderByTime = false;
 //const double TR_SMEAR = 0.2210;
 const int N_E_divide = 19;
 double E_divide[N_E_divide] = {43.0, 46.0, 49.0, 52.0, 55.0, 58.0, 61.0, 64.0, 67.0, 70.0, 73.0, 78.0, 84.0, 91.0, 100.0, 115.0, 140.0, 190.0, 1000.0};
-double timecorr_shift[N_E_divide] = {277.32228254, 275.67500044, 272.10244004, 287.15428262, 294.29875716, 287.44070277, 282.95400642, 279.80934988, 282.70083441, 277.48972614, 275.41563559, 274.64132692, 268.13864834, 266.62392304, 270.24297452, 260.13781686, 263.16768474, 242.21320465, 181.26510246};
+//double timecorr_shift[N_E_divide] = {277.32228254, 275.67500044, 272.10244004, 287.15428262, 294.29875716, 287.44070277, 282.95400642, 279.80934988, 282.70083441, 277.48972614, 275.41563559, 274.64132692, 268.13864834, 266.62392304, 270.24297452, 260.13781686, 263.16768474, 242.21320465, 181.26510246};
+double timecorr_shift[N_E_divide] = {279.9466476,  278.14972231, 289.29761875, 289.53508063, 294.00756053, 285.88226868, 286.03238378, 281.17150628, 282.09074926, 277.63137454, 274.44859489, 276.70782472, 271.64726448, 272.08565454, 261.00671411, 260.43733686, 258.90569305, 250.88234587, 188.61409597};
 
-double timecorr_smear_aa = 6591.9*6591.9 - 6536.8*6536.8;
-double timecorr_smear_bb = 2.0*211.1*211.1 - 2.0*96.2*96.2;
+//double timecorr_smear_aa = 6591.9*6591.9 - 6536.8*6536.8;
+double timecorr_smear_aa = 6408.7*6408.7 - 6143.0*6143.0;
+//double timecorr_smear_bb = 2.0*211.1*211.1 - 2.0*96.2*96.2;
+double timecorr_smear_bb = 2.0*289.1*289.1 - 2.0*168.8*168.8;
 
 #define _phodebug 0
 
@@ -171,7 +174,9 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
   if ( label != "") analysisTag = label;
   
   RazorHelper *helper = 0;
+  RazorHelper *helper_GED = 0;
   helper = new RazorHelper(analysisTag, isData, false); 
+  helper_GED = new RazorHelper("Razor2016_07Aug2017Rereco_GEDPhoton", isData, false); 
 
 
   //--------------------------------
@@ -260,6 +265,7 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 
 
   int NPU;
+  int nLooseMuons, nTightMuons;
   unsigned int run, lumi, event;
   float genVertexTime = 0.0;//genVertexT;
   float weight;
@@ -283,14 +289,22 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
   
   int n_Photons;
   int n_Photons_reco;
-  float pho1E, pho1Pt, pho1Pt_scaleUp, pho1Pt_scaleDown, pho1Eta, pho1Phi, pho1SeedE, pho1SeedPt, pho1SeedEta, pho1SeedPhi, pho1SC_E, pho1SC_Pt, pho1SC_Eta, pho1SC_Phi, pho1angle_xtal, pho1SigmaIetaIeta, pho1R9, pho1HoverE, pho1sumChargedHadronPt, pho1sumNeutralHadronEt, pho1sumPhotonEt, pho1PFsumChargedHadronPt, pho1PFsumNeutralHadronEt, pho1PFsumPhotonEt, pho1ecalPFClusterIso, pho1hcalPFClusterIso, pho1trkSumPtHollowConeDR03, pho1sigmaEOverE, pho1SeedTimeRaw, pho1SeedTimeCalib, pho1SeedTimeCalibTOF, pho1SeedTimeGenV, pho1ClusterTime, pho1ClusterTime_SmearToData, pho1Sminor, pho1Smajor, pho1Setaeta, pho1Sphiphi, pho1Setaphi, pho1GenE, pho1GenPt, pho1GenEta, pho1GenPhi;
-  float pho2E, pho2Pt, pho2Pt_scaleUp, pho2Pt_scaleDown, pho2Eta, pho2Phi, pho2SeedE, pho2SeedPt, pho2SeedEta, pho2SeedPhi, pho2SC_E, pho2SC_Pt, pho2SC_Eta, pho2SC_Phi, pho2angle_xtal, pho2SigmaIetaIeta, pho2R9, pho2HoverE, pho2sumChargedHadronPt, pho2sumNeutralHadronEt, pho2sumPhotonEt, pho2PFsumChargedHadronPt, pho2PFsumNeutralHadronEt, pho2PFsumPhotonEt, pho2ecalPFClusterIso, pho2hcalPFClusterIso, pho2trkSumPtHollowConeDR03, pho2sigmaEOverE, pho2SeedTimeRaw, pho2SeedTimeCalib, pho2SeedTimeCalibTOF, pho2SeedTimeGenV, pho2ClusterTime, pho2ClusterTime_SmearToData, pho2Sminor, pho2Smajor, pho2Setaeta, pho2Sphiphi, pho2Setaphi, pho2GenE, pho2GenPt, pho2GenEta, pho2GenPhi;
+  float pho1E, pho1Pt, pho1Pt_scaleUp, pho1Pt_scaleDown, pho1Eta, pho1Phi, pho1SeedE, pho1SeedPt, pho1SeedEta, pho1SeedPhi, pho1SC_E, pho1SC_Pt, pho1SC_Eta, pho1SC_Phi, pho1angle_xtal, pho1SigmaIetaIeta, pho1R9, pho1HoverE, pho1sumChargedHadronPt, pho1sumNeutralHadronEt, pho1sumPhotonEt, pho1PFsumChargedHadronPt, pho1PFsumNeutralHadronEt, pho1PFsumPhotonEt, pho1ecalPFClusterIso, pho1hcalPFClusterIso, pho1trkSumPtHollowConeDR03, pho1sigmaEOverE, pho1SeedTimeRaw, pho1SeedTimeCalib, pho1SeedTimeCalibTOF, pho1SeedTimeGenV, pho1ClusterTime, pho1ClusterTime_SmearToData, pho1Sminor_private, pho1Smajor_private, pho1Sminor, pho1Smajor, pho1Setaeta, pho1Sphiphi, pho1Setaphi, pho1GenE, pho1GenPt, pho1GenEta, pho1GenPhi;
+  float pho2E, pho2Pt, pho2Pt_scaleUp, pho2Pt_scaleDown, pho2Eta, pho2Phi, pho2SeedE, pho2SeedPt, pho2SeedEta, pho2SeedPhi, pho2SC_E, pho2SC_Pt, pho2SC_Eta, pho2SC_Phi, pho2angle_xtal, pho2SigmaIetaIeta, pho2R9, pho2HoverE, pho2sumChargedHadronPt, pho2sumNeutralHadronEt, pho2sumPhotonEt, pho2PFsumChargedHadronPt, pho2PFsumNeutralHadronEt, pho2PFsumPhotonEt, pho2ecalPFClusterIso, pho2hcalPFClusterIso, pho2trkSumPtHollowConeDR03, pho2sigmaEOverE, pho2SeedTimeRaw, pho2SeedTimeCalib, pho2SeedTimeCalibTOF, pho2SeedTimeGenV, pho2ClusterTime, pho2ClusterTime_SmearToData, pho2Sminor_private, pho2Smajor_private, pho2Smajor, pho2Sminor, pho2Setaeta, pho2Sphiphi, pho2Setaphi, pho2GenE, pho2GenPt, pho2GenEta, pho2GenPhi;
   bool pho1passEleVeto, pho1passIsoLoose, pho1passIsoMedium, pho1passIsoTight, pho1isStandardPhoton, pho1isPromptPhoton, pho1isDelayedPhoton;
   bool pho1passIsoLoose_privatePF, pho1passIsoMedium_privatePF, pho1passIsoTight_privatePF;
-  bool pho1passIsoLoose_PFClusterIso, pho1passIsoMedium_PFClusterIso, pho1passIsoTight_PFClusterIso;
+  bool pho1passIsoLoose_OOT, pho1passIsoMedium_OOT, pho1passIsoTight_OOT;
+  bool pho1passIsoLoose_comboIso, pho1passIsoMedium_comboIso, pho1passIsoTight_comboIso;
   bool pho2passEleVeto, pho2passIsoLoose, pho2passIsoMedium, pho2passIsoTight, pho2isStandardPhoton, pho2isPromptPhoton, pho2isDelayedPhoton;
   bool pho2passIsoLoose_privatePF, pho2passIsoMedium_privatePF, pho2passIsoTight_privatePF;
-  bool pho2passIsoLoose_PFClusterIso, pho2passIsoMedium_PFClusterIso, pho2passIsoTight_PFClusterIso;
+  bool pho2passIsoLoose_OOT, pho2passIsoMedium_OOT, pho2passIsoTight_OOT;
+  bool pho2passIsoLoose_comboIso, pho2passIsoMedium_comboIso, pho2passIsoTight_comboIso;
+  bool pho1passHoverELoose, pho1passHoverEMedium, pho1passHoverETight;
+  bool pho2passHoverELoose, pho2passHoverEMedium, pho2passHoverETight;
+  bool pho1passSigmaIetaIetaLoose, pho1passSigmaIetaIetaMedium, pho1passSigmaIetaIetaTight;
+  bool pho2passSigmaIetaIetaLoose, pho2passSigmaIetaIetaMedium, pho2passSigmaIetaIetaTight;
+  bool pho1passSmajorLoose, pho1passSmajorMedium, pho1passSmajorTight;
+  bool pho2passSmajorLoose, pho2passSmajorMedium, pho2passSmajorTight;
 
   // XYZ rechit where photon is detected
   float pho1SeedX;
@@ -373,6 +387,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
   outputTree->Branch("sf_pdf", "std::vector<float>",&sf_pdf);
 
   outputTree->Branch("NPU", &NPU, "npu/i");
+  outputTree->Branch("nLooseMuons", &nLooseMuons, "npu/i");
+  outputTree->Branch("nTightMuons", &nTightMuons, "npu/i");
   outputTree->Branch("nPV", &nPV, "nPV/i");
   outputTree->Branch("fixedGridRhoFastjetAll", &fixedGridRhoFastjetAll, "fixedGridRhoFastjetAll/F");
   outputTree->Branch("fixedGridRhoFastjetAllCalo", &fixedGridRhoFastjetAllCalo, "fixedGridRhoFastjetAllCalo/F");
@@ -436,20 +452,35 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
   outputTree->Branch("pho1passEleVeto", &pho1passEleVeto, "pho1passEleVeto/O");
   outputTree->Branch("pho1passIsoLoose", &pho1passIsoLoose, "pho1passIsoLoose/O");
   outputTree->Branch("pho1passIsoLoose_privatePF", &pho1passIsoLoose_privatePF, "pho1passIsoLoose_privatePF/O");
-  outputTree->Branch("pho1passIsoLoose_PFClusterIso", &pho1passIsoLoose_PFClusterIso, "pho1passIsoLoose_PFClusterIso/O");
+  outputTree->Branch("pho1passIsoLoose_OOT", &pho1passIsoLoose_OOT, "pho1passIsoLoose_OOT/O");
   outputTree->Branch("pho1passIsoMedium", &pho1passIsoMedium, "pho1passIsoMedium/O");
   outputTree->Branch("pho1passIsoMedium_privatePF", &pho1passIsoMedium_privatePF, "pho1passIsoMedium_privatePF/O");
-  outputTree->Branch("pho1passIsoMedium_PFClusterIso", &pho1passIsoMedium_PFClusterIso, "pho1passIsoMedium_PFClusterIso/O");
+  outputTree->Branch("pho1passIsoMedium_OOT", &pho1passIsoMedium_OOT, "pho1passIsoMedium_OOT/O");
   outputTree->Branch("pho1passIsoTight", &pho1passIsoTight, "pho1passIsoTight/O");
   outputTree->Branch("pho1passIsoTight_privatePF", &pho1passIsoTight_privatePF, "pho1passIsoTight_privatePF/O");
-  outputTree->Branch("pho1passIsoTight_PFClusterIso", &pho1passIsoTight_PFClusterIso, "pho1passIsoTight_PFClusterIso/O");
+  outputTree->Branch("pho1passIsoTight_OOT", &pho1passIsoTight_OOT, "pho1passIsoTight_OOT/O");
+  
+  outputTree->Branch("pho1passIsoLoose_comboIso", &pho1passIsoLoose_comboIso, "pho1passIsoLoose_comboIso/O");
+  outputTree->Branch("pho1passIsoMedium_comboIso", &pho1passIsoMedium_comboIso, "pho1passIsoMedium_comboIso/O");
+  outputTree->Branch("pho1passIsoTight_comboIso", &pho1passIsoTight_comboIso, "pho1passIsoTight_comboIso/O");
+  outputTree->Branch("pho1passHoverELoose", &pho1passHoverELoose, "pho1passHoverELoose/O");
+  outputTree->Branch("pho1passHoverEMedium", &pho1passHoverEMedium, "pho1passHoverEMedium/O");
+  outputTree->Branch("pho1passHoverETight", &pho1passHoverETight, "pho1passHoverETight/O");
+  outputTree->Branch("pho1passSigmaIetaIetaLoose", &pho1passSigmaIetaIetaLoose, "pho1passSigmaIetaIetaLoose/O");
+  outputTree->Branch("pho1passSigmaIetaIetaMedium", &pho1passSigmaIetaIetaMedium, "pho1passSigmaIetaIetaMedium/O");
+  outputTree->Branch("pho1passSigmaIetaIetaTight", &pho1passSigmaIetaIetaTight, "pho1passSigmaIetaIetaTight/O");
+  outputTree->Branch("pho1passSmajorLoose", &pho1passSmajorLoose, "pho1passSmajorLoose/O");
+  outputTree->Branch("pho1passSmajorMedium", &pho1passSmajorMedium, "pho1passSmajorMedium/O");
+  outputTree->Branch("pho1passSmajorTight", &pho1passSmajorTight, "pho1passSmajorTight/O");
   outputTree->Branch("pho1SeedTimeRaw", &pho1SeedTimeRaw, "pho1SeedTimeRaw/F");
   outputTree->Branch("pho1SeedTimeCalib", &pho1SeedTimeCalib, "pho1SeedTimeCalib/F");
   outputTree->Branch("pho1SeedTimeCalibTOF", &pho1SeedTimeCalibTOF, "pho1SeedTimeCalibTOF/F");
   outputTree->Branch("pho1SeedTimeGenV", &pho1SeedTimeGenV, "pho1SeedTimeGenV/F");
   outputTree->Branch("pho1ClusterTime", &pho1ClusterTime, "pho1ClusterTime/F");
   outputTree->Branch("pho1ClusterTime_SmearToData", &pho1ClusterTime_SmearToData, "pho1ClusterTime_SmearToData/F");
+  outputTree->Branch("pho1Sminor_private", &pho1Sminor_private, "pho1Sminor_private/F");
   outputTree->Branch("pho1Sminor", &pho1Sminor, "pho1Sminor/F");
+  outputTree->Branch("pho1Smajor_private", &pho1Smajor_private, "pho1Smajor_private/F");
   outputTree->Branch("pho1Smajor", &pho1Smajor, "pho1Smajor/F");
   outputTree->Branch("pho1Setaeta", &pho1Setaeta, "pho1Setaeta/F");
   outputTree->Branch("pho1Sphiphi", &pho1Sphiphi, "pho1Sphiphi/F");
@@ -496,20 +527,36 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
   outputTree->Branch("pho2passEleVeto", &pho2passEleVeto, "pho2passEleVeto/O");
   outputTree->Branch("pho2passIsoLoose", &pho2passIsoLoose, "pho2passIsoLoose/O");
   outputTree->Branch("pho2passIsoLoose_privatePF", &pho2passIsoLoose_privatePF, "pho2passIsoLoose_privatePF/O");
-  outputTree->Branch("pho2passIsoLoose_PFClusterIso", &pho2passIsoLoose_PFClusterIso, "pho2passIsoLoose_PFClusterIso/O");
+  outputTree->Branch("pho2passIsoLoose_OOT", &pho2passIsoLoose_OOT, "pho2passIsoLoose_OOT/O");
   outputTree->Branch("pho2passIsoMedium", &pho2passIsoMedium, "pho2passIsoMedium/O");
   outputTree->Branch("pho2passIsoMedium_privatePF", &pho2passIsoMedium_privatePF, "pho2passIsoMedium_privatePF/O");
-  outputTree->Branch("pho2passIsoMedium_PFClusterIso", &pho2passIsoMedium_PFClusterIso, "pho2passIsoMedium_PFClusterIso/O");
+  outputTree->Branch("pho2passIsoMedium_OOT", &pho2passIsoMedium_OOT, "pho2passIsoMedium_OOT/O");
   outputTree->Branch("pho2passIsoTight", &pho2passIsoTight, "pho2passIsoTight/O");
   outputTree->Branch("pho2passIsoTight_privatePF", &pho2passIsoTight_privatePF, "pho2passIsoTight_privatePF/O");
-  outputTree->Branch("pho2passIsoTight_PFClusterIso", &pho2passIsoTight_PFClusterIso, "pho2passIsoTight_PFClusterIso/O");
+  outputTree->Branch("pho2passIsoTight_OOT", &pho2passIsoTight_OOT, "pho2passIsoTight_OOT/O");
+ 
+  outputTree->Branch("pho2passIsoLoose_comboIso", &pho2passIsoLoose_comboIso, "pho2passIsoLoose_comboIso/O");
+  outputTree->Branch("pho2passIsoMedium_comboIso", &pho2passIsoMedium_comboIso, "pho2passIsoMedium_comboIso/O");
+  outputTree->Branch("pho2passIsoTight_comboIso", &pho2passIsoTight_comboIso, "pho2passIsoTight_comboIso/O");
+  outputTree->Branch("pho2passHoverELoose", &pho2passHoverELoose, "pho2passHoverELoose/O");
+  outputTree->Branch("pho2passHoverEMedium", &pho2passHoverEMedium, "pho2passHoverEMedium/O");
+  outputTree->Branch("pho2passHoverETight", &pho2passHoverETight, "pho2passHoverETight/O");
+  outputTree->Branch("pho2passSigmaIetaIetaLoose", &pho2passSigmaIetaIetaLoose, "pho2passSigmaIetaIetaLoose/O");
+  outputTree->Branch("pho2passSigmaIetaIetaMedium", &pho2passSigmaIetaIetaMedium, "pho2passSigmaIetaIetaMedium/O");
+  outputTree->Branch("pho2passSigmaIetaIetaTight", &pho2passSigmaIetaIetaTight, "pho2passSigmaIetaIetaTight/O");
+  outputTree->Branch("pho2passSmajorLoose", &pho2passSmajorLoose, "pho2passSmajorLoose/O");
+  outputTree->Branch("pho2passSmajorMedium", &pho2passSmajorMedium, "pho2passSmajorMedium/O");
+  outputTree->Branch("pho2passSmajorTight", &pho2passSmajorTight, "pho2passSmajorTight/O");
+
   outputTree->Branch("pho2SeedTimeRaw", &pho2SeedTimeRaw, "pho2SeedTimeRaw/F");
   outputTree->Branch("pho2SeedTimeCalib", &pho2SeedTimeCalib, "pho2SeedTimeCalib/F");
   outputTree->Branch("pho2SeedTimeCalibTOF", &pho2SeedTimeCalibTOF, "pho2SeedTimeCalibTOF/F");
   outputTree->Branch("pho2SeedTimeGenV", &pho2SeedTimeGenV, "pho2SeedTimeGenV/F");
   outputTree->Branch("pho2ClusterTime", &pho2ClusterTime, "pho2ClusterTime/F");
   outputTree->Branch("pho2ClusterTime_SmearToData", &pho2ClusterTime_SmearToData, "pho2ClusterTime_SmearToData/F");
+  outputTree->Branch("pho2Sminor_private", &pho2Sminor_private, "pho2Sminor_private/F");
   outputTree->Branch("pho2Sminor", &pho2Sminor, "pho2Sminor/F");
+  outputTree->Branch("pho2Smajor_private", &pho2Smajor_private, "pho2Smajor_private/F");
   outputTree->Branch("pho2Smajor", &pho2Smajor, "pho2Smajor/F");
   outputTree->Branch("pho2Setaeta", &pho2Setaeta, "pho2Setaeta/F");
   outputTree->Branch("pho2Sphiphi", &pho2Sphiphi, "pho2Sphiphi/F");
@@ -609,6 +656,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
     event = eventNum;
     genVertexTime = 0.0;//genVertexT
     NPU = 0;   
+    nLooseMuons = 0;   
+    nTightMuons = 0;   
     weight = 1.0;
     pileupWeight = 1.0;
     pileupWeightUp = 1.0;
@@ -639,14 +688,14 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 
     n_Photons = 0;
     n_Photons_reco = 0;
-    pho1E = -999, pho1Pt = -999, pho1Pt_scaleUp = -999, pho1Pt_scaleDown = -999, pho1Eta = -999, pho1Phi = -999, pho1SeedE = -999, pho1SeedPt = -999, pho1SeedEta = -999, pho1SeedPhi = -999, pho1SC_E = -999, pho1SC_Pt = -999, pho1SC_Eta = -999, pho1SC_Phi = -999, pho1angle_xtal = -999, pho1SigmaIetaIeta = -999, pho1R9 = -999, pho1HoverE = -999, pho1sumChargedHadronPt = -999, pho1sumNeutralHadronEt = -999, pho1sumPhotonEt = -999, pho1PFsumChargedHadronPt = -999, pho1PFsumNeutralHadronEt = -999, pho1PFsumPhotonEt = -999, pho1ecalPFClusterIso = -999, pho1hcalPFClusterIso = -999, pho1trkSumPtHollowConeDR03 = -999, pho1sigmaEOverE = -999, pho1SeedTimeRaw = -999, pho1SeedTimeCalib = -999, pho1SeedTimeCalibTOF = -999, pho1SeedTimeGenV = -999, pho1ClusterTime = -999, pho1ClusterTime_SmearToData, pho1Sminor = -999, pho1Smajor = -999, pho1Setaeta = -999, pho1Sphiphi = -999, pho1Setaphi = -999, pho1GenE = -999, pho1GenPt = -999, pho1GenEta = -999, pho1GenPhi = -999;
-    pho2E = -999, pho2Pt = -999, pho2Pt_scaleDown = -999, pho2Pt_scaleDown = -999, pho2Eta = -999, pho2Phi = -999, pho2SeedE = -999, pho2SeedPt = -999, pho2SeedEta = -999, pho2SeedPhi = -999, pho2SC_E = -999, pho2SC_Pt = -999, pho2SC_Eta = -999, pho2SC_Phi = -999, pho2angle_xtal = -999, pho2SigmaIetaIeta = -999, pho2R9 = -999, pho2HoverE = -999, pho2sumChargedHadronPt = -999, pho2sumNeutralHadronEt = -999, pho2sumPhotonEt = -999, pho2PFsumChargedHadronPt = -999, pho2PFsumNeutralHadronEt = -999, pho2PFsumPhotonEt = -999, pho2ecalPFClusterIso = -999, pho2hcalPFClusterIso = -999, pho2trkSumPtHollowConeDR03 = -999, pho2sigmaEOverE = -999, pho2SeedTimeRaw = -999, pho2SeedTimeCalib = -999, pho2SeedTimeCalibTOF = -999, pho2SeedTimeGenV = -999, pho2ClusterTime = -999, pho2ClusterTime_SmearToData, pho2Sminor = -999, pho2Smajor = -999, pho2Setaeta = -999, pho2Sphiphi = -999, pho2Setaphi = -999, pho2GenE = -999, pho2GenPt = -999, pho2GenEta = -999, pho2GenPhi = -999;
+    pho1E = -999, pho1Pt = -999, pho1Pt_scaleUp = -999, pho1Pt_scaleDown = -999, pho1Eta = -999, pho1Phi = -999, pho1SeedE = -999, pho1SeedPt = -999, pho1SeedEta = -999, pho1SeedPhi = -999, pho1SC_E = -999, pho1SC_Pt = -999, pho1SC_Eta = -999, pho1SC_Phi = -999, pho1angle_xtal = -999, pho1SigmaIetaIeta = -999, pho1R9 = -999, pho1HoverE = -999, pho1sumChargedHadronPt = -999, pho1sumNeutralHadronEt = -999, pho1sumPhotonEt = -999, pho1PFsumChargedHadronPt = -999, pho1PFsumNeutralHadronEt = -999, pho1PFsumPhotonEt = -999, pho1ecalPFClusterIso = -999, pho1hcalPFClusterIso = -999, pho1trkSumPtHollowConeDR03 = -999, pho1sigmaEOverE = -999, pho1SeedTimeRaw = -999, pho1SeedTimeCalib = -999, pho1SeedTimeCalibTOF = -999, pho1SeedTimeGenV = -999, pho1ClusterTime = -999, pho1ClusterTime_SmearToData, pho1Sminor_private = -999, pho1Smajor_private = -999, pho1Sminor = -999, pho1Smajor = -999, pho1Setaeta = -999, pho1Sphiphi = -999, pho1Setaphi = -999, pho1GenE = -999, pho1GenPt = -999, pho1GenEta = -999, pho1GenPhi = -999;
+    pho2E = -999, pho2Pt = -999, pho2Pt_scaleDown = -999, pho2Pt_scaleDown = -999, pho2Eta = -999, pho2Phi = -999, pho2SeedE = -999, pho2SeedPt = -999, pho2SeedEta = -999, pho2SeedPhi = -999, pho2SC_E = -999, pho2SC_Pt = -999, pho2SC_Eta = -999, pho2SC_Phi = -999, pho2angle_xtal = -999, pho2SigmaIetaIeta = -999, pho2R9 = -999, pho2HoverE = -999, pho2sumChargedHadronPt = -999, pho2sumNeutralHadronEt = -999, pho2sumPhotonEt = -999, pho2PFsumChargedHadronPt = -999, pho2PFsumNeutralHadronEt = -999, pho2PFsumPhotonEt = -999, pho2ecalPFClusterIso = -999, pho2hcalPFClusterIso = -999, pho2trkSumPtHollowConeDR03 = -999, pho2sigmaEOverE = -999, pho2SeedTimeRaw = -999, pho2SeedTimeCalib = -999, pho2SeedTimeCalibTOF = -999, pho2SeedTimeGenV = -999, pho2ClusterTime = -999, pho2ClusterTime_SmearToData, pho2Sminor_private = -999, pho2Smajor_private = -999, pho2Sminor = -999, pho2Smajor = -999, pho2Setaeta = -999, pho2Sphiphi = -999, pho2Setaphi = -999, pho2GenE = -999, pho2GenPt = -999, pho2GenEta = -999, pho2GenPhi = -999;
     pho1passEleVeto = false, pho1passIsoLoose = false, pho1passIsoMedium = false, pho1passIsoTight = false, pho1isStandardPhoton = false, pho1isPromptPhoton = false, pho1isDelayedPhoton = false;
     pho1passIsoLoose_privatePF = false, pho1passIsoMedium_privatePF = false, pho1passIsoTight_privatePF = false;
-    pho1passIsoLoose_PFClusterIso = false, pho1passIsoMedium_PFClusterIso = false, pho1passIsoTight_PFClusterIso = false;
+    pho1passIsoLoose_OOT = false, pho1passIsoMedium_OOT = false, pho1passIsoTight_OOT = false;
     pho2passEleVeto = false, pho2passIsoLoose = false, pho2passIsoMedium = false, pho2passIsoTight = false, pho2isStandardPhoton = false, pho2isPromptPhoton = false, pho2isDelayedPhoton = false;
     pho2passIsoLoose_privatePF = false, pho2passIsoMedium_privatePF = false, pho2passIsoTight_privatePF = false;
-    pho2passIsoLoose_PFClusterIso = false, pho2passIsoMedium_PFClusterIso = false, pho2passIsoTight_PFClusterIso = false;
+    pho2passIsoLoose_OOT = false, pho2passIsoMedium_OOT = false, pho2passIsoTight_OOT = false;
 
     pho1SeedX = -999;
     pho1SeedY = -999;
@@ -857,8 +906,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 	double phoSetaeta = 0.0;//second moments of eta eta
 	double phoSphiphi = 0.0;
 	double phoSetaphi = 0.0;
-	double phoSminor = 0.0;
-	double phoSmajor = 0.0;
+	double phoSminor_private = 0.0;
+	double phoSmajor_private = 0.0;
 	
       	for (uint k=0; k<(*pho_EcalRechitIndex)[ind_pho].size(); ++k) 
 	{
@@ -941,8 +990,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 		phoSetaeta = phoSetaeta / mTotalWeight;	
 		phoSphiphi = phoSphiphi / mTotalWeight;	
 		phoSetaphi = phoSetaphi / mTotalWeight;	
-		phoSminor = 0.5 * (phoSetaeta + phoSphiphi - pow(pow(phoSetaeta - phoSphiphi,2.0) + 4.0*pow(phoSetaphi,2.0),0.5));
-		phoSmajor = 0.5 * (phoSetaeta + phoSphiphi + pow(pow(phoSetaeta - phoSphiphi,2.0) + 4.0*pow(phoSetaphi,2.0),0.5));
+		phoSminor_private = 0.5 * (phoSetaeta + phoSphiphi - pow(pow(phoSetaeta - phoSphiphi,2.0) + 4.0*pow(phoSetaphi,2.0),0.5));
+		phoSmajor_private = 0.5 * (phoSetaeta + phoSphiphi + pow(pow(phoSetaeta - phoSphiphi,2.0) + 4.0*pow(phoSetaphi,2.0),0.5));
 	}
         
 	bool isPromptPhoton = false;
@@ -1015,7 +1064,9 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
         	pho2SeedTimeCalibTOF = pho1SeedTimeCalibTOF;
         	pho2SeedTimeGenV = pho1SeedTimeGenV;
         	pho2ClusterTime = pho1ClusterTime;
+		pho2Sminor_private = pho1Sminor_private;
 		pho2Sminor = pho1Sminor;
+		pho2Smajor_private = pho1Smajor_private;
 		pho2Smajor = pho1Smajor;
 		pho2Setaeta = pho1Setaeta;
 		pho2Sphiphi = pho1Sphiphi;
@@ -1023,13 +1074,13 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 		pho2passEleVeto = pho1passEleVeto;
 		pho2passIsoLoose = pho1passIsoLoose;
 		pho2passIsoLoose_privatePF = pho1passIsoLoose_privatePF;
-		pho2passIsoLoose_PFClusterIso = pho1passIsoLoose_PFClusterIso;
+		pho2passIsoLoose_OOT = pho1passIsoLoose_OOT;
 		pho2passIsoMedium = pho1passIsoMedium;
 		pho2passIsoMedium_privatePF = pho1passIsoMedium_privatePF;
-		pho2passIsoMedium_PFClusterIso = pho1passIsoMedium_PFClusterIso;
+		pho2passIsoMedium_OOT = pho1passIsoMedium_OOT;
 		pho2passIsoTight = pho1passIsoTight;
 		pho2passIsoTight_privatePF = pho1passIsoTight_privatePF;
-		pho2passIsoTight_PFClusterIso = pho1passIsoTight_PFClusterIso;
+		pho2passIsoTight_OOT = pho1passIsoTight_OOT;
         	pho2isStandardPhoton = pho1isStandardPhoton;
         	pho2isPromptPhoton = pho1isPromptPhoton;
   		pho2SeedX = pho1SeedX;
@@ -1058,6 +1109,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 		pho1SigmaIetaIeta = phoFull5x5SigmaIetaIeta[ind_pho];
 		pho1R9 = phoR9[ind_pho];
 		pho1HoverE = pho_HoverE[ind_pho];
+		pho1Sminor = pho_sminor[ind_pho];
+		pho1Smajor = pho_smajor[ind_pho];
 		pho1sumChargedHadronPt = pho_sumChargedHadronPt[ind_pho];
 		pho1PFsumChargedHadronPt = pho_pfIsoChargedHadronIso[ind_pho];
 		pho1sumNeutralHadronEt = pho_sumNeutralHadronEt[ind_pho];
@@ -1073,21 +1126,21 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
         	pho1SeedTimeCalibTOF = TOFCorrectedSeedHitTime;
         	pho1SeedTimeGenV = TOFCorrectedSeedHitTime_genV;
         	pho1ClusterTime = weightedTime;
-		pho1Sminor = phoSminor;
-		pho1Smajor = phoSmajor;
+		pho1Sminor_private = phoSminor_private;
+		pho1Smajor_private = phoSmajor_private;
 		pho1Setaeta = phoSetaeta;
 		pho1Sphiphi = phoSphiphi;
 		pho1Setaphi = phoSetaphi;
 		pho1passEleVeto = pho_passEleVeto[ind_pho];
 		pho1passIsoLoose = photonPassLooseIso(ind_pho);
 		pho1passIsoLoose_privatePF = photonPassLooseIso(ind_pho, true, true);
-		pho1passIsoLoose_PFClusterIso = photonPassLooseIso(ind_pho, true, false, true);
+		pho1passIsoLoose_OOT = photonPassLooseIso_OOT2016(ind_pho);
 		pho1passIsoMedium = photonPassMediumIso(ind_pho);
 		pho1passIsoMedium_privatePF = photonPassMediumIso(ind_pho, true, true);
-		pho1passIsoMedium_PFClusterIso = photonPassMediumIso(ind_pho, true, false, true);
+		pho1passIsoMedium_OOT = photonPassMediumIso_OOT2016(ind_pho);
 		pho1passIsoTight = photonPassTightIso(ind_pho);
 		pho1passIsoTight_privatePF = photonPassTightIso(ind_pho, true, true);
-		pho1passIsoTight_PFClusterIso = photonPassTightIso(ind_pho, true, false, true);
+		pho1passIsoTight_OOT = photonPassTightIso_OOT2016(ind_pho);
         	pho1isStandardPhoton = pho_isStandardPhoton[ind_pho];
         	pho1isPromptPhoton = isPromptPhoton;
 
@@ -1118,6 +1171,8 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
 		pho2SigmaIetaIeta = phoFull5x5SigmaIetaIeta[ind_pho];
 		pho2R9 = phoR9[ind_pho];
 		pho2HoverE = pho_HoverE[ind_pho];
+		pho2Sminor = pho_sminor[ind_pho];
+		pho2Smajor = pho_smajor[ind_pho];
 		pho2sumChargedHadronPt = pho_sumChargedHadronPt[ind_pho];
 		pho2PFsumChargedHadronPt = pho_pfIsoChargedHadronIso[ind_pho];
 		pho2sumNeutralHadronEt = pho_sumNeutralHadronEt[ind_pho];
@@ -1133,21 +1188,21 @@ void DelayedPhotonAnalyzer::Analyze(bool isData, int option, string outFileName,
         	pho2SeedTimeCalibTOF = TOFCorrectedSeedHitTime;
         	pho2SeedTimeGenV = TOFCorrectedSeedHitTime_genV;
         	pho2ClusterTime = weightedTime;
-		pho2Sminor = phoSminor;
-		pho2Smajor = phoSmajor;
+		pho2Sminor_private = phoSminor_private;
+		pho2Smajor_private = phoSmajor_private;
 		pho2Setaeta = phoSetaeta;
 		pho2Sphiphi = phoSphiphi;
 		pho2Setaphi = phoSetaphi;
 		pho2passEleVeto = pho_passEleVeto[ind_pho];
 		pho2passIsoLoose = photonPassLooseIso(ind_pho);
 		pho2passIsoLoose_privatePF = photonPassLooseIso(ind_pho, true, true);
-		pho2passIsoLoose_PFClusterIso = photonPassLooseIso(ind_pho, true, false, true);
+		pho2passIsoLoose_OOT = photonPassLooseIso_OOT2016(ind_pho);
 		pho2passIsoMedium = photonPassMediumIso(ind_pho);
 		pho2passIsoMedium_privatePF = photonPassMediumIso(ind_pho, true, true);
-		pho2passIsoMedium_PFClusterIso = photonPassMediumIso(ind_pho, true, false, true);
+		pho2passIsoMedium_OOT = photonPassMediumIso_OOT2016(ind_pho);
 		pho2passIsoTight = photonPassTightIso(ind_pho);
 		pho2passIsoTight_privatePF = photonPassTightIso(ind_pho, true, true);
-		pho2passIsoTight_PFClusterIso = photonPassTightIso(ind_pho, true, false, true);
+		pho2passIsoTight_OOT = photonPassTightIso_OOT2016(ind_pho);
         	pho2isStandardPhoton = pho_isStandardPhoton[ind_pho];
         	pho2isPromptPhoton = isPromptPhoton;
 
@@ -1210,7 +1265,11 @@ if(nPho>=2) HT += pho2Pt;
 if(nPho == 1) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
 else
 {
-	photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);	
+	if(pho1isStandardPhoton and pho2isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper_GED->getPhotonScaleFactor(pho2Pt, pho2Eta);
+	if(!pho1isStandardPhoton and pho2isStandardPhoton) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper_GED->getPhotonScaleFactor(pho2Pt, pho2Eta);
+	if(pho1isStandardPhoton and !pho2isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);
+	if(!pho1isStandardPhoton and !pho2isStandardPhoton) photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);
+	//photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta) * helper->getPhotonScaleFactor(pho2Pt, pho2Eta);	
 }
 //******************************************************
 //compute trigger efficiency weights for MC
@@ -1279,12 +1338,12 @@ for(int i = 0; i < nJets; i++)
 	//cout<<"DEBUG JEC = "<<JEC<<endl;
       	TLorentzVector thisJet = makeTLorentzVector( jetPt[i]*JEC, jetEta[i], jetPhi[i], jetE[i]*JEC );
 
-        if ( !jetPassIDLoose[i] ) continue;
+        if ( !jetPassIDTight[i] ) continue;
         if( fabs( thisJet.Eta() ) >= 3.0 ) continue;
 	double deltaRJetPhoton = 0.0;
 	if(nPho==1) deltaRJetPhoton = thisJet.DeltaR( pho1 );
 	if(nPho>=2) deltaRJetPhoton = min( thisJet.DeltaR( pho1 ), thisJet.DeltaR( pho2 ) );
-	if ( deltaRJetPhoton <= 0.5 ) continue;//According to the April 1st 2015 AN
+	if ( deltaRJetPhoton <= 0.3 ) continue;//According to the April 1st 2015 AN
 
 
         //JEC up and down
@@ -1407,6 +1466,9 @@ for(int i = 0; i < nMuons; i++){
         }
 	
 	if (alreadySelected) continue;
+	
+	if(muonPt[i] > 20 && isLooseMuon(i)) nLooseMuons++;
+	if(muonPt[i] > 20 && isTightMuon(i)) nTightMuons++;
 	
 	//use only tight leptons
 	if(isTightMuon(i) && muonPt[i] >= 20) {	
@@ -1675,6 +1737,39 @@ mll = (lep1+lep2).M();
 			}//if isMatched
 		}//if gen found
 	}//if !isData
+
+
+       //apply photon ID according to whether it's GED or OOT photon
+       
+        pho1passIsoLoose_comboIso = pho1isStandardPhoton ? pho1passIsoLoose : pho1passIsoLoose_OOT;
+        pho1passIsoMedium_comboIso = pho1isStandardPhoton ? pho1passIsoMedium : pho1passIsoMedium_OOT;
+        pho1passIsoTight_comboIso = pho1isStandardPhoton ? pho1passIsoTight : pho1passIsoTight_OOT;
+        pho2passIsoLoose_comboIso = pho2isStandardPhoton ? pho2passIsoLoose : pho2passIsoLoose_OOT;
+        pho2passIsoMedium_comboIso = pho2isStandardPhoton ? pho2passIsoMedium : pho2passIsoMedium_OOT;
+        pho2passIsoTight_comboIso = pho2isStandardPhoton ? pho2passIsoTight : pho2passIsoTight_OOT;
+		
+	pho1passHoverELoose = pho1isStandardPhoton ? ((abs(pho1Eta)<1.4442) ? (pho1HoverE < 0.04596) : (pho1HoverE < 0.0590)) : true;
+	pho1passHoverEMedium = pho1isStandardPhoton ? ((abs(pho1Eta)<1.4442) ? (pho1HoverE < 0.02197) : (pho1HoverE < 0.0326)) : true;
+	pho1passHoverETight = pho1isStandardPhoton ? ((abs(pho1Eta)<1.4442) ? (pho1HoverE < 0.02148) : (pho1HoverE < 0.0321)) : true;
+		
+	pho2passHoverELoose = pho2isStandardPhoton ? ((abs(pho2Eta)<1.4442) ? (pho2HoverE < 0.04596) : (pho2HoverE < 0.0590)) : true;
+	pho2passHoverEMedium = pho2isStandardPhoton ? ((abs(pho2Eta)<1.4442) ? (pho2HoverE < 0.02197) : (pho2HoverE < 0.0326)) : true;
+	pho2passHoverETight = pho2isStandardPhoton ? ((abs(pho2Eta)<1.4442) ? (pho2HoverE < 0.02148) : (pho2HoverE < 0.0321)) : true;
+
+	pho1passSigmaIetaIetaLoose = pho1SigmaIetaIeta < 0.015 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+	pho1passSigmaIetaIetaMedium = pho1SigmaIetaIeta < 0.011 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+	pho1passSigmaIetaIetaTight = pho1SigmaIetaIeta < 0.0099 + 0.001549*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5) + (0.0004942*(pho1SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);		
+	pho2passSigmaIetaIetaLoose = pho2SigmaIetaIeta < 0.012 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+	pho2passSigmaIetaIetaMedium = pho2SigmaIetaIeta < 0.011 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+	pho2passSigmaIetaIetaTight = pho2SigmaIetaIeta < 0.0099 + 0.001549*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5) + (0.0004942*(pho2SeedTimeRaw-3.5) + 0.005422)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);		
+	pho1passSmajorLoose  = pho1Smajor < 0.80 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+	pho1passSmajorMedium  = pho1Smajor < 0.50 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+	pho1passSmajorMedium  = pho1Smajor < 0.40 - 0.2816*abs(pho1Eta) + 0.3865*pho1Eta*pho1Eta + 1.179*exp(-0.009499*pho1Pt) - 0.193*pho1SeedTimeRaw*(std::copysign(0.5, 0.0 - pho1SeedTimeRaw)+0.5) + 0.2268*pho1SeedTimeRaw*(std::copysign(0.5, pho1SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho1SeedTimeRaw)+0.5)+(0.02828*(pho1SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho1SeedTimeRaw-3.5)+0.5);
+
+	pho2passSmajorLoose  = pho2Smajor < 0.80 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+	pho2passSmajorMedium  = pho2Smajor < 0.50 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+	pho2passSmajorMedium  = pho2Smajor < 0.40 - 0.2816*abs(pho2Eta) + 0.3865*pho2Eta*pho2Eta + 1.179*exp(-0.009499*pho2Pt) - 0.193*pho2SeedTimeRaw*(std::copysign(0.5, 0.0 - pho2SeedTimeRaw)+0.5) + 0.2268*pho2SeedTimeRaw*(std::copysign(0.5, pho2SeedTimeRaw)+0.5)*(std::copysign(0.5, 3.5-pho2SeedTimeRaw)+0.5)+(0.02828*(pho2SeedTimeRaw-3.5) + 0.7938)*(std::copysign(0.5, pho2SeedTimeRaw-3.5)+0.5);
+
 
 	outputTree->Fill();		
 

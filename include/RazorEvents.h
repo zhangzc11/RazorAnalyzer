@@ -166,6 +166,8 @@ public :
    Float_t         phoSigmaIetaIeta[700];   //[nPhotons]
    Float_t         phoFull5x5SigmaIetaIeta[700];   //[nPhotons]
    Float_t         phoR9[700];   //[nPhotons]
+   Float_t         pho_sminor[700];   //[nPhotons]
+   Float_t         pho_smajor[700];   //[nPhotons]
    Float_t         pho_HoverE[700];   //[nPhotons]
    Float_t         pho_sumChargedHadronPtAllVertices[700][200];   //[nPhotons]
    Float_t         pho_sumChargedHadronPt[700];   //[nPhotons]
@@ -525,6 +527,8 @@ public :
    TBranch        *b_phoSigmaIetaIeta;   //!
    TBranch        *b_phoFull5x5SigmaIetaIeta;   //!
    TBranch        *b_phoR9;   //!
+   TBranch        *b_pho_sminor;   //!
+   TBranch        *b_pho_smajor;   //!
    TBranch        *b_pho_HoverE;   //!
    TBranch        *b_pho_sumChargedHadronPtAllVertices;   //!
    TBranch        *b_pho_sumChargedHadronPt;   //!
@@ -975,6 +979,8 @@ void RazorEvents::Init(TTree *tree)
    fChain->SetBranchAddress("phoSigmaIetaIeta", phoSigmaIetaIeta, &b_phoSigmaIetaIeta);
    fChain->SetBranchAddress("phoFull5x5SigmaIetaIeta", phoFull5x5SigmaIetaIeta, &b_phoFull5x5SigmaIetaIeta);
    fChain->SetBranchAddress("phoR9", phoR9, &b_phoR9);
+   fChain->SetBranchAddress("pho_sminor", pho_sminor, &b_pho_sminor);
+   fChain->SetBranchAddress("pho_smajor", pho_smajor, &b_pho_smajor);
    fChain->SetBranchAddress("pho_HoverE", pho_HoverE, &b_pho_HoverE);
    fChain->SetBranchAddress("pho_sumChargedHadronPtAllVertices", pho_sumChargedHadronPtAllVertices, &b_pho_sumChargedHadronPtAllVertices);
    fChain->SetBranchAddress("pho_sumChargedHadronPt", pho_sumChargedHadronPt, &b_pho_sumChargedHadronPt);

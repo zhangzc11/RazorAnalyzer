@@ -151,6 +151,8 @@ class RazorHelper {
         void loadTag_Razor2015(); // Final set of files used in 2015
         void loadTag_Razor2015_76X(); // Configuration for 2015 ReReco
         void loadTag_Razor2016_07Aug2017Rereco(); // Configuration for 2016 Rereco
+        void loadTag_Razor2016_07Aug2017Rereco_GEDPhoton(); // Configuration for 2016 Rereco
+        void loadTag_Razor2016_07Aug2017Rereco_DelayedPhoton(); // Configuration for 2016 Rereco
         void loadTag_Razor2016_MoriondRereco(); // Configuration for 2016 Rereco
         void loadTag_Razor2016_03Feb2017Rereco(); // Configuration for 2016 03Feb2017 Rereco
         void loadTag_Razor2016G_80X(); // Special configuration for Run2016G
