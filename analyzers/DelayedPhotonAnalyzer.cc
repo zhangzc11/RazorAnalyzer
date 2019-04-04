@@ -1264,8 +1264,12 @@ if(nPho>=2) HT += pho2Pt;
 //******************************************************
 
 
-if(pho1isStandardPhoton) photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
-else photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta);
+if(pho1isStandardPhoton) 
+{
+photonEffSF = helper_GED->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta, true);
+cout<<"DEBUG getPhotonScaleFactor_Tight_GED, pt = "<<pho1Pt<<", eta ="<<pho1Eta<<", sf = "<<photonEffSF<<endl;
+}
+else photonEffSF = helper->getPhotonScaleFactor_Tight(pho1Pt, pho1Eta, true);
 
 //******************************************************
 //compute trigger efficiency weights for MC

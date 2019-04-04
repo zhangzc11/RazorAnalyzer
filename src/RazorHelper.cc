@@ -859,11 +859,11 @@ void RazorHelper::loadLepton_Razor2016_MoriondRereco(){
 void RazorHelper::loadPhoton_Razor2016_MoriondRereco(){
     // photon efficiency scale factors
     std::cout << "RazorHelper: loading photon efficiency scale factor histograms" << std::endl;
-    phoEffSFFile = TFile::Open("efficiency_results_PhoLooseEffDenominatorReco_2016_Rereco.root");
-    phoLooseEffSFHist = (TH2D*)phoEffSFFile->Get("ScaleFactor_PhoLooseEffDenominatorReco");
+    phoEffSFFile = TFile::Open("egammaEffi_EGM2D_delayedphoton_GED_Loose.root");
+    phoLooseEffSFHist = (TH2D*)phoEffSFFile->Get("EGamma_SF2D");
 
-    phoTightEffSFFile = TFile::Open("efficiency_results_PhoTightEffDenominatorReco_2016_Rereco.root");
-    phoTightEffSFHist = (TH2D*)phoEffSFFile->Get("ScaleFactor_PhoTightEffDenominatorReco");
+    phoTightEffSFFile = TFile::Open("egammaEffi_EGM2D_delayedphoton_GED_Tight.root");
+    phoTightEffSFHist = (TH2D*)phoTightEffSFFile->Get("EGamma_SF2D");
 
     phoEffFastsimSFFile = TFile::Open("PhotonEffFastsimToFullsimCorrectionFactors.2016.root");
     phoLooseEffFastsimSFHist = (TH2D*)phoEffFastsimSFFile->Get("ElectronLoose_FastsimScaleFactor");
@@ -871,10 +871,13 @@ void RazorHelper::loadPhoton_Razor2016_MoriondRereco(){
 
 void RazorHelper::loadPhoton_Razor2016_07Aug2017Rereco_DelayedPhoton(){
     std::cout << "RazorHelper: loading photon efficiency scale factor histograms" << std::endl;
-    phoEffSFFile = TFile::Open("efficiency_results_PhoLooseEffDenominatorReco_2016_Rereco_DelayedPhoton.root");
-    phoLooseEffSFHist = (TH2D*)phoEffSFFile->Get("ScaleFactor_PhoLooseEffDenominatorReco");
-    phoTightEffSFFile = TFile::Open("efficiency_results_PhoTightEffDenominatorReco_2016_Rereco_DelayedPhoton.root");
-    phoTightEffSFHist = (TH2D*)phoTightEffSFFile->Get("ScaleFactor_PhoTightEffDenominatorReco");
+
+    phoEffSFFile = TFile::Open("egammaEffi_EGM2D_delayedphoton_OOT_Loose.root");
+    phoLooseEffSFHist = (TH2D*)phoEffSFFile->Get("EGamma_SF2D");
+
+    phoTightEffSFFile = TFile::Open("egammaEffi_EGM2D_delayedphoton_OOT_Tight.root");
+    phoTightEffSFHist = (TH2D*)phoTightEffSFFile->Get("EGamma_SF2D");
+
 
     phoEffFastsimSFFile = TFile::Open("PhotonEffFastsimToFullsimCorrectionFactors.2016.root");
     phoLooseEffFastsimSFHist = (TH2D*)phoEffFastsimSFFile->Get("ElectronLoose_FastsimScaleFactor");
@@ -2855,11 +2858,11 @@ double RazorHelper::getPhotonScaleFactor(float pt, float eta, bool invert) {
     {
       if( invert )
 	{
-	  sf = lookupEtaPtScaleFactor( phoLooseEffSFHist, pt, eta, 20.01, 99.9, false );
+	  sf = lookupEtaPtScaleFactor( phoLooseEffSFHist, pt, eta, 20.01, 9999.0, false );
 	}
       else
 	{
-	  sf = lookupPtEtaScaleFactor( phoLooseEffSFHist, pt, eta, 20.01, 99.9 );
+	  sf = lookupPtEtaScaleFactor( phoLooseEffSFHist, pt, eta, 20.01, 9999.0 );
 	}
     }
   else { std::cout << "[WARNING] Could not load phoLooseEffSFHist.\n"; }
@@ -2872,11 +2875,11 @@ double RazorHelper::getPhotonScaleFactor_Tight(float pt, float eta, bool invert)
     {
       if( invert )
         {
-          sf = lookupEtaPtScaleFactor( phoTightEffSFHist, pt, eta, 20.01, 99.9, false );
+          sf = lookupEtaPtScaleFactor( phoTightEffSFHist, pt, eta, 20.01, 9999.0, false );
         }
       else
         {
-          sf = lookupPtEtaScaleFactor( phoTightEffSFHist, pt, eta, 20.01, 99.9 );
+          sf = lookupPtEtaScaleFactor( phoTightEffSFHist, pt, eta, 20.01, 9999.0 );
         }
     }
   else { std::cout << "[WARNING] Could not load phoTightEffSFHist.\n"; }
