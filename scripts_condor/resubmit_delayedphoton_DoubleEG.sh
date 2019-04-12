@@ -11,18 +11,18 @@ job_script=${RazorAnalyzerDir}/scripts_condor/runRazorJob_CaltechT2.sh
 filesPerJob=15
 
 for sample in \
-DoubleEG_2016B_ver1_06Aug2018 \
-DoubleEG_2016B_ver2_06Aug2018 \
-DoubleEG_2016C_06Aug2018 \
-DoubleEG_2016D_06Aug2018 \
-DoubleEG_2016E_06Aug2018 \
-DoubleEG_2016F_06Aug2018 \
-DoubleEG_2016G_06Aug2018 \
-DoubleEG_2016H_06Aug2018
+DoubleEG_2016B_ver1_25Mar2019 \
+DoubleEG_2016B_ver2_25Mar2019 \
+DoubleEG_2016C_25Mar2019 \
+DoubleEG_2016D_25Mar2019 \
+DoubleEG_2016E_25Mar2019 \
+DoubleEG_2016F_25Mar2019 \
+DoubleEG_2016G_25Mar2019 \
+DoubleEG_2016H_25Mar2019
 
 do
 	echo "Sample " ${sample}
-	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/Data_2016_reMINIAOD/${sample}.cern.txt
+	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/Data_2016_reMINIAOD/${sample}.caltech.txt
 	nfiles=`cat ${CMSSW_BASE}$inputfilelist | wc | awk '{print $1}' `
 	maxjob=`python -c "print int($nfiles.0/$filesPerJob)-1"`
 	analyzer=DelayedPhotonAnalyzer

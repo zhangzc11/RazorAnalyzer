@@ -11,18 +11,18 @@ job_script=${RazorAnalyzerDir}/scripts_condor/runRazorJob_CaltechT2.sh
 filesPerJob=15
 
 for sample in \
-DoubleEG_2016B_ver1_06Aug2018 \
-DoubleEG_2016B_ver2_06Aug2018 \
-DoubleEG_2016C_06Aug2018 \
-DoubleEG_2016D_06Aug2018 \
-DoubleEG_2016E_06Aug2018 \
-DoubleEG_2016F_06Aug2018 \
-DoubleEG_2016G_06Aug2018 \
-DoubleEG_2016H_06Aug2018
+DoubleEG_2016B_ver1_25Mar2019 \
+DoubleEG_2016B_ver2_25Mar2019 \
+DoubleEG_2016C_25Mar2019 \
+DoubleEG_2016D_25Mar2019 \
+DoubleEG_2016E_25Mar2019 \
+DoubleEG_2016F_25Mar2019 \
+DoubleEG_2016G_25Mar2019 \
+DoubleEG_2016H_25Mar2019
 
 do
 	echo "Sample " ${sample}
-	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/Data_2016_reMINIAOD/${sample}.cern.txt
+	inputfilelist=/src/RazorAnalyzer/lists/Run2/razorNtuplerV4p1/Data_2016_reMINIAOD/${sample}.caltech.txt
 	nfiles=`cat ${CMSSW_BASE}$inputfilelist | wc | awk '{print $1}' `
 	maxjob=`python -c "print int($nfiles.0/$filesPerJob)-1"`
 	analyzer=ZeeTiming
@@ -44,6 +44,12 @@ do
 		echo "should_transfer_files = YES" >> ${jdl_file}
 		echo "RequestMemory = 2000" >> ${jdl_file}
 		echo "RequestCpus = 1" >> ${jdl_file}
+		echo "x509userproxy = \$ENV(X509_USER_PROXY)" >> ${jdl_file}
+                echo "+RunAsOwner = True" >> ${jdl_file}
+                echo "+InteractiveUser = true" >> ${jdl_file}
+                echo '+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/bbockelm/cms:rhel7"' >> ${jdl_file}
+                echo "+SingularityBindCVMFS = True" >> ${jdl_file}
+                echo "run_as_owner = True" >> ${jdl_file}
 		echo "when_to_transfer_output = ON_EXIT" >> ${jdl_file}
 		echo "Queue 1" >> ${jdl_file}
 		echo "condor_submit submit/${analyzer}_${sample}_Job${jobnumber}_Of_${maxjob}.jdl"
